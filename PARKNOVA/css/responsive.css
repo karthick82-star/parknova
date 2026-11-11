@@ -379,6 +379,11 @@
     font-size: 0.75rem !important;
   }
 
+  .filter-group select,
+  .filter-group input {
+    width: 100% !important;
+  }
+
   .search-input-wrapper {
     width: 100% !important;
   }
