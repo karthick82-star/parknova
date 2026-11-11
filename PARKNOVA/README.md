@@ -1,7 +1,8 @@
 # PARKNOVA – Smart Parking Discovery and Reservation Platform
 > **Tagline:** Find Your Space. Park with Confidence.  
+> **Created by:** lvlup.jk  
 > **Type:** College Major Project Frontend Prototype  
-> **Tech Stack:** HTML5, CSS3, Vanilla JavaScript (ES6+), Leaflet.js, OpenStreetMap, Chart.js, QRCode.js
+> **Tech Stack:** HTML5, CSS3, Vanilla JavaScript (ES6+), Leaflet.js, OpenStreetMap, Chart.js, QRCode.js, Firebase Realtime Database
 
 ---
 

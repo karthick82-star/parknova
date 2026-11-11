@@ -150,6 +150,26 @@ PN.app = {
         PN.auth.logout();
       });
     }
+
+    // 5. Dashboard footer for driver, owner, and admin portals
+    const dashboardMain = document.querySelector('.dashboard-main');
+    if (dashboardMain && !dashboardMain.querySelector('.dashboard-footer')) {
+      const footer = document.createElement('footer');
+      footer.className = 'dashboard-footer';
+      footer.style.cssText = 'padding: 1.25rem 2rem; font-size: 0.8rem; color: #64748B; border-top: 1px solid #E2E8F0; text-align: center; margin-top: auto; background: #FFFFFF;';
+      footer.innerHTML = '&copy; 2026 PARKNOVA Platform • Created by <strong style="color:var(--navy);">lvlup.jk</strong>';
+      dashboardMain.appendChild(footer);
+    }
+
+    // 6. Sidebar footer credit
+    const sidebarFooter = document.querySelector('.sidebar-footer');
+    if (sidebarFooter && !sidebarFooter.querySelector('.sidebar-credit')) {
+      const credit = document.createElement('div');
+      credit.className = 'sidebar-credit';
+      credit.style.cssText = 'font-size: 0.72rem; color: #64748B; text-align: center; margin-top: 0.6rem; letter-spacing: 0.3px;';
+      credit.innerHTML = 'Created by <strong style="color:#94A3B8;">lvlup.jk</strong>';
+      sidebarFooter.appendChild(credit);
+    }
   }
 };
 
