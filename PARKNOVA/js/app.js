@@ -131,14 +131,34 @@ PN.app = {
         sidebar.classList.remove('sidebar-open');
         backdrop.classList.remove('active');
       });
+
+      sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', () => {
+          sidebar.classList.remove('sidebar-open');
+          backdrop.classList.remove('active');
+        });
+      });
     }
 
     // 3. Public navbar mobile toggle
     const navToggle = document.querySelector('.nav-toggle-btn');
     const navLinks = document.querySelector('.nav-links');
     if (navToggle && navLinks) {
-      navToggle.addEventListener('click', () => {
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         navLinks.classList.toggle('nav-open');
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('nav-open');
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+          navLinks.classList.remove('nav-open');
+        }
       });
     }
 

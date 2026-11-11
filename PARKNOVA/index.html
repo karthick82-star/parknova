@@ -50,12 +50,12 @@
   <!-- Hero Section -->
   <section class="hero-section" style="background: linear-gradient(135deg, #172B3A 0%, #0F1E29 100%); color: white; padding: 5rem 0 4rem; position: relative; overflow: hidden;">
     <div class="container">
-      <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center;">
+      <div class="hero-grid">
         <div>
           <span class="badge badge-green" style="margin-bottom: 1rem; font-size: 0.8rem;">
             <i class="fa-solid fa-bolt"></i> Next-Gen Smart Mobility
           </span>
-          <h1 style="color: white; font-size: 3rem; line-height: 1.15; margin-bottom: 1.25rem;">
+          <h1 class="hero-title" style="color: white; font-size: 3rem; line-height: 1.15; margin-bottom: 1.25rem;">
             Find Your Space.<br><span style="color: #16A36A;">Park with Confidence.</span>
           </h1>
           <p style="color: #94A3B8; font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">
@@ -63,8 +63,8 @@
           </p>
 
           <!-- Quick Search Bar Form -->
-          <div style="background: white; border-radius: var(--radius-md); padding: 0.85rem; box-shadow: var(--shadow-lg);">
-            <form action="find-parking.html" method="GET" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <div class="hero-search-card" style="background: white; border-radius: var(--radius-md); padding: 0.85rem; box-shadow: var(--shadow-lg);">
+            <form action="find-parking.html" method="GET" class="hero-search-form" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
               <div style="flex: 1.5; min-width: 180px; position: relative;">
                 <i class="fa-solid fa-location-dot" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--navy-muted);"></i>
                 <input type="text" name="city" placeholder="City or Landmark (e.g. Tiruchirappalli)" class="form-control" style="padding-left: 2.4rem; border: none; background: #F8FAFC;">
@@ -83,7 +83,7 @@
             </form>
           </div>
 
-          <div style="display: flex; gap: 2rem; margin-top: 2rem; color: #CBD5E1; font-size: 0.85rem;">
+          <div class="hero-highlights" style="display: flex; gap: 2rem; margin-top: 2rem; color: #CBD5E1; font-size: 0.85rem;">
             <div><i class="fa-solid fa-check text-primary"></i> 100% Guaranteed Slots</div>
             <div><i class="fa-solid fa-check text-primary"></i> Contactless QR Ticket</div>
             <div><i class="fa-solid fa-check text-primary"></i> Zero Booking Fees</div>
@@ -91,10 +91,10 @@
         </div>
 
         <div style="position: relative;">
-          <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80" 
+          <img class="hero-image-wrapper" src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80" 
                alt="Smart Parking Management" 
                style="border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); border: 4px solid rgba(255,255,255,0.1); width: 100%; height: 380px; object-fit: cover;">
-          <div style="position: absolute; bottom: -15px; left: -15px; background: white; padding: 1rem 1.25rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); color: var(--navy); display: flex; align-items: center; gap: 0.75rem;">
+          <div class="hero-floating-card" style="position: absolute; bottom: -15px; left: -15px; background: white; padding: 1rem 1.25rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); color: var(--navy); display: flex; align-items: center; gap: 0.75rem;">
             <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--success-bg); color: var(--success); display: grid; place-items: center; font-size: 1.25rem;">
               <i class="fa-solid fa-qrcode"></i>
             </div>
@@ -148,7 +148,7 @@
   <!-- Popular Parking Locations Section -->
   <section style="padding: 5rem 0; background: var(--bg-light);">
     <div class="container">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+      <div class="section-header-flex" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
         <div>
           <span class="badge badge-green" style="margin-bottom: 0.5rem;">Verified Spaces</span>
           <h2>Popular Parking Locations</h2>
