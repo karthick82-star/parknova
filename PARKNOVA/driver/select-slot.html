@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Parking Slot – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge"><i class="fa-solid fa-user"></i></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Driver</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-car text-primary"></i> Driver Account</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="../find-parking.html" class="sidebar-link active">
+          <i class="fa-solid fa-map-location-dot"></i> Find & Book
+        </a>
+        <a href="my-bookings.html" class="sidebar-link">
+          <i class="fa-solid fa-ticket"></i> My Bookings
+        </a>
+        <a href="parking-history.html" class="sidebar-link">
+          <i class="fa-solid fa-clock-rotate-left"></i> Parking History
+        </a>
+        <a href="profile.html" class="sidebar-link">
+          <i class="fa-solid fa-user-gear"></i> My Vehicles & Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Driver Portal / <a href="../find-parking.html">Parking Search</a> / <span>Select Slot</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Header -->
+        <div class="page-header">
+          <div>
+            <h1 id="facility-title">Select Parking Bay</h1>
+            <p class="muted" id="facility-address">Loading facility information...</p>
+          </div>
+          <div>
+            <a href="../find-parking.html" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-arrow-left"></i> Change Facility
+            </a>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+          
+          <!-- Visual Slot Selector Matrix -->
+          <div class="slot-selection-panel">
+            <div class="d-flex justify-between align-center mb-2">
+              <h3>Interactive Bay Layout</h3>
+              <span class="badge badge-green"><i class="fa-solid fa-fingerprint"></i> Click an available spot</span>
+            </div>
+            
+            <div id="slot-picker-container">
+              <div class="spinner"></div>
+            </div>
+          </div>
+
+          <!-- Selection Summary & Proceed Card -->
+          <div class="card" style="position: sticky; top: 90px; border-top: 4px solid var(--primary); box-shadow: var(--shadow-md);">
+            <h3 style="margin-bottom: 1rem; font-size: 1.15rem;">Selected Bay Details</h3>
+
+            <div id="no-slot-selected" class="empty-state" style="padding: 2rem 1rem;">
+              <i class="fa-solid fa-arrow-pointer empty-state-icon" style="font-size: 2rem;"></i>
+              <h4 style="font-size: 1rem;">No Slot Selected</h4>
+              <p style="font-size: 0.8rem; margin-bottom: 0;">Click any green (Available) slot on the visual floor plan to proceed.</p>
+            </div>
+
+            <div id="slot-selected-card" class="hidden">
+              <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem; text-align: center;">
+                <div style="font-size: 0.75rem; color: #166534; font-weight: 700; text-transform: uppercase;">Selected Slot Number</div>
+                <div id="selected-slot-num" style="font-size: 2.25rem; font-weight: 800; color: #166534; line-height: 1.2;">--</div>
+                <span id="selected-slot-type" class="badge badge-neutral" style="margin-top: 4px;">4W (Car)</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.85rem; margin-bottom: 1.5rem;">
+                <div class="d-flex justify-between">
+                  <span class="muted">Floor Level</span>
+                  <strong id="selected-slot-floor">Level 1</strong>
+                </div>
+                <div class="d-flex justify-between">
+                  <span class="muted">Hourly Rate</span>
+                  <strong id="selected-slot-rate">₹40 / hr</strong>
+                </div>
+                <div class="d-flex justify-between">
+                  <span class="muted">Reservation Guarantee</span>
+                  <span class="badge badge-green"><i class="fa-solid fa-lock"></i> 100% Locked</span>
+                </div>
+              </div>
+
+              <button type="button" id="btn-proceed" class="btn btn-primary btn-block btn-lg">
+                <i class="fa-solid fa-arrow-right"></i> Proceed to Reservation
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/slots.js"></script>
+  <script src="../js/booking.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('driver');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      const params = PN.app.getQueryParams();
+      const parkingId = params.parkingId;
+
+      if (!parkingId) {
+        window.location.href = '../find-parking.html';
+        return;
+      }
+
+      const parking = PN.storage.find('parkings', parkingId);
+      if (!parking) {
+        PN.toast('Parking facility not found.', 'error');
+        window.location.href = '../find-parking.html';
+        return;
+      }
+
+      document.getElementById('facility-title').textContent = parking.name;
+      document.getElementById('facility-address').textContent = `${parking.address}, ${parking.city}`;
+
+      let chosenSlot = null;
+      const container = document.getElementById('slot-picker-container');
+      const noSlotView = document.getElementById('no-slot-selected');
+      const slotCardView = document.getElementById('slot-selected-card');
+      const slotNumEl = document.getElementById('selected-slot-num');
+      const slotTypeEl = document.getElementById('selected-slot-type');
+      const slotFloorEl = document.getElementById('selected-slot-floor');
+      const slotRateEl = document.getElementById('selected-slot-rate');
+      const proceedBtn = document.getElementById('btn-proceed');
+
+      PN.slots.initPicker(container, parkingId, (slot) => {
+        chosenSlot = slot;
+        noSlotView.classList.add('hidden');
+        slotCardView.classList.remove('hidden');
+
+        slotNumEl.textContent = slot.slotNumber;
+        slotTypeEl.textContent = slot.vehicleType;
+        slotFloorEl.textContent = slot.floorName;
+        
+        const rate = slot.vehicleType === '2W' ? parking.hourlyRate2W : parking.hourlyRate4W;
+        slotRateEl.textContent = `₹${rate} / hr`;
+      });
+
+      proceedBtn.addEventListener('click', () => {
+        if (!chosenSlot) return;
+        window.location.href = `booking.html?parkingId=${parking.id}&slotId=${chosenSlot.id}&floorId=${chosenSlot.floorId}&type=${chosenSlot.vehicleType}`;
+      });
+    });
+  </script>
+</body>
+</html>
+

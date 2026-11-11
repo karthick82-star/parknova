@@ -1,0 +1,16 @@
+/* PARKNOVA design tokens: change colours/fonts here and the whole site updates */
+:root{
+  --green:#16A36A; --green-dark:#0F8456; --green-soft:#E6F6EF;
+  --navy:#172B3A; --navy-soft:#5B6B78;
+  --bg:#F2F5F7; --white:#FFFFFF; --border:#E1E7EB;
+  --yellow:#F2B01E; --red:#E5484D; --blue:#2F7DE1;
+  --font:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+  --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.25rem; --fs-xl:1.75rem; --fs-2xl:2.5rem;
+  --r-sm:8px; --r-md:14px; --r-lg:20px;
+  --shadow-sm:0 1px 3px rgba(23,43,58,.08); --shadow-md:0 6px 20px rgba(23,43,58,.10);
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:1rem; --sp-4:1.5rem; --sp-5:2.5rem;
+  --ease:.2s ease; --sidebar-w:250px; --nav-h:64px;
+  /* parking slot states */
+  --slot-available:#16A36A; --slot-occupied:#E5484D; --slot-reserved:#F2B01E;
+  --slot-selected:#2F7DE1; --slot-maintenance:#9AA5AE;
+}

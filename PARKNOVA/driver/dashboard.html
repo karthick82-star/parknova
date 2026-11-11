@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Dashboard – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge"><i class="fa-solid fa-user"></i></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Loading...</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-car text-primary"></i> Driver Account</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link active">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="../find-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-map-location-dot"></i> Find & Book
+        </a>
+        <a href="my-bookings.html" class="sidebar-link">
+          <i class="fa-solid fa-ticket"></i> My Bookings
+        </a>
+        <a href="parking-history.html" class="sidebar-link">
+          <i class="fa-solid fa-clock-rotate-left"></i> Parking History
+        </a>
+        <a href="profile.html" class="sidebar-link">
+          <i class="fa-solid fa-user-gear"></i> My Vehicles & Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Driver Portal / <span>Overview</span>
+          </div>
+        </div>
+        <div class="dashboard-topbar-actions">
+          <a href="../find-parking.html" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-magnifying-glass"></i> Find Parking
+          </a>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Welcome Hero Banner -->
+        <div class="page-header">
+          <div>
+            <h1>Welcome, <span id="welcome-name" class="text-primary">Driver</span>!</h1>
+            <p class="muted">Monitor your upcoming reservations, tickets, and find nearby smart parking slots.</p>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Bookings</div>
+              <div class="stat-value" id="stat-total-bookings">0</div>
+              <div class="stat-subtext">Lifetime reservations</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Upcoming & Active</div>
+              <div class="stat-value" id="stat-upcoming-bookings">0</div>
+              <div class="stat-subtext">Reserved parking spots</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Completed Sessions</div>
+              <div class="stat-value" id="stat-completed-bookings">0</div>
+              <div class="stat-subtext">Past parkings</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-navy">
+            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Spent</div>
+              <div class="stat-value" id="stat-total-spent">₹0</div>
+              <div class="stat-subtext">Parking charges paid</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Reservation Highlight (If any) -->
+        <div id="upcoming-booking-banner" class="card mb-4 hidden" style="border-left: 4px solid var(--primary); background: #FAFDFB;">
+          <div class="d-flex justify-between align-center flex-wrap gap-2">
+            <div>
+              <span class="badge badge-green mb-1"><i class="fa-solid fa-circle-dot"></i> Confirmed Reservation</span>
+              <h3 id="active-booking-facility" style="margin-bottom: 0.25rem;">Central Plaza Grand Smart Parking</h3>
+              <p class="muted mb-0" id="active-booking-meta" style="font-size: 0.85rem;">Slot A2 (Ground Level) • TN 45 BK 7890</p>
+            </div>
+            <div class="d-flex align-center gap-2">
+              <div class="text-right">
+                <div style="font-size: 0.75rem; color: var(--navy-muted); font-weight: 600;">COUNTDOWN</div>
+                <div id="dashboard-countdown" class="countdown-digits" style="font-size: 1.25rem;">--:--:--</div>
+              </div>
+              <a id="btn-view-ticket" href="#" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-qrcode"></i> View QR Ticket
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Columns: Recent Activity & Recommended Lots -->
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; align-items: start;">
+          
+          <!-- Recent Activity Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Recent Parking Activity</div>
+              <a href="my-bookings.html" class="btn btn-outline btn-sm">View All</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Facility & Slot</th>
+                    <th>Date & Time</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-bookings-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Smart Recommendations Column -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Nearby Recommendations</div>
+              <span class="badge badge-green"><i class="fa-solid fa-sparkles"></i> Best Picks</span>
+            </div>
+            <div id="recommended-lots-container" style="display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/booking.js"></script>
+  <script src="../js/parking.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Route Guard
+      const user = PN.auth.requireAuth('driver');
+      if (!user) return;
+
+      // Populate user info
+      document.getElementById('welcome-name').textContent = user.name.split(' ')[0];
+      document.getElementById('user-display-name').textContent = user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      // Load Bookings for this driver
+      const bookings = PN.storage.where('bookings', b => b.userId === user.id);
+      const totalBookings = bookings.length;
+      const upcoming = bookings.filter(b => b.status === 'confirmed');
+      const completed = bookings.filter(b => b.status === 'completed');
+      const totalSpent = bookings
+        .filter(b => b.status !== 'cancelled')
+        .reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+
+      // Metrics
+      document.getElementById('stat-total-bookings').textContent = totalBookings;
+      document.getElementById('stat-upcoming-bookings').textContent = upcoming.length;
+      document.getElementById('stat-completed-bookings').textContent = completed.length;
+      document.getElementById('stat-total-spent').textContent = PN.app.formatCurrency(totalSpent);
+
+      // Active Upcoming Highlight
+      if (upcoming.length > 0) {
+        const first = upcoming[0];
+        const banner = document.getElementById('upcoming-booking-banner');
+        banner.classList.remove('hidden');
+        document.getElementById('active-booking-facility').textContent = first.parkingName;
+        document.getElementById('active-booking-meta').textContent = `Slot ${first.slotNumber} (${first.floorName}) • ${first.vehiclePlate}`;
+        document.getElementById('btn-view-ticket').href = `confirmation.html?id=${first.id}`;
+
+        PN.booking.startCountdown(first.startTime, document.getElementById('dashboard-countdown'));
+      }
+
+      // Recent Bookings Table
+      const tbody = document.getElementById('recent-bookings-tbody');
+      if (bookings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center muted" style="padding: 2rem;">No bookings yet. <a href="../find-parking.html">Find your first parking space!</a></td></tr>';
+      } else {
+        const sorted = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+        tbody.innerHTML = sorted.map(b => {
+          let badgeClass = 'badge-green';
+          if (b.status === 'cancelled') badgeClass = 'badge-red';
+          else if (b.status === 'confirmed') badgeClass = 'badge-blue';
+
+          return `
+            <tr>
+              <td><a href="confirmation.html?id=${b.id}" style="font-family:var(--font-mono); font-weight:700;">${b.id}</a></td>
+              <td>
+                <div style="font-weight:600;">${PN.app.escapeHtml(b.parkingName)}</div>
+                <div class="muted" style="font-size:0.75rem;">Slot ${b.slotNumber} (${b.floorName})</div>
+              </td>
+              <td>${PN.app.formatDateTime(b.startTime)}</td>
+              <td style="font-weight:700;">${PN.app.formatCurrency(b.totalAmount)}</td>
+              <td><span class="badge ${badgeClass}">${b.status}</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Recommended Lots
+      const recContainer = document.getElementById('recommended-lots-container');
+      const approved = PN.parking.getPublicParkings().slice(0, 2);
+      if (approved.length === 0) {
+        recContainer.innerHTML = '<div class="muted text-center">No parking lots available.</div>';
+      } else {
+        recContainer.innerHTML = approved.map(p => `
+          <div style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.85rem; background:white; display:flex; gap:0.75rem; align-items:center;">
+            <img src="${(p.images && p.images[0]) || ''}" style="width:70px; height:60px; object-fit:cover; border-radius:6px;">
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:0.9rem;">${PN.app.escapeHtml(p.name)}</div>
+              <div class="muted" style="font-size:0.75rem;"><i class="fa-solid fa-location-dot"></i> ${p.city}</div>
+              <div style="font-weight:800; color:var(--primary); font-size:0.85rem; margin-top:2px;">₹${p.hourlyRate4W}/hr</div>
+            </div>
+            <a href="select-slot.html?parkingId=${p.id}" class="btn btn-primary btn-sm">Book</a>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>
+

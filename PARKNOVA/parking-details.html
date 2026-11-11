@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking Facility Details – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/parking.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body data-root="">
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-square-parking"></i>
+        <span>PARK</span>NOVA
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="find-parking.html">Find Parking</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+      </div>
+      <button class="nav-toggle-btn" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Facility Details Main Content -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <!-- Breadcrumb -->
+    <div style="font-size: 0.85rem; color: var(--navy-muted); margin-bottom: 1.5rem;">
+      <a href="index.html">Home</a> &nbsp;/&nbsp;
+      <a href="find-parking.html">Find Parking</a> &nbsp;/&nbsp;
+      <span id="breadcrumb-title" style="color: var(--navy); font-weight: 600;">Loading...</span>
+    </div>
+
+    <div id="details-loading" class="spinner"></div>
+
+    <div id="details-content" class="hidden">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+        
+        <!-- Left Column: Media, Description, Amenities, Visual Slot Preview -->
+        <div>
+          <!-- Image Banner -->
+          <div style="height: 360px; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.75rem; box-shadow: var(--shadow-sm); position: relative;">
+            <img id="detail-img" src="" alt="Parking Facility" style="width: 100%; height: 100%; object-fit: cover;">
+            <div id="detail-heatmap-badge" style="position: absolute; top: 1.25rem; left: 1.25rem;"></div>
+          </div>
+
+          <!-- Title & Location Header -->
+          <div style="margin-bottom: 1.5rem;">
+            <h1 id="detail-name" style="font-size: 2.25rem; margin-bottom: 0.5rem;"></h1>
+            <div style="font-size: 0.95rem; color: var(--navy-muted); display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-location-dot text-primary"></i>
+              <span id="detail-address"></span>
+            </div>
+          </div>
+
+          <!-- Description Card -->
+          <div class="card mb-3">
+            <h3 style="margin-bottom: 0.75rem;">About this Facility</h3>
+            <p id="detail-description" class="lead" style="font-size: 0.95rem;"></p>
+          </div>
+
+          <!-- Amenities & Features -->
+          <div class="card mb-3">
+            <h3 style="margin-bottom: 1rem;">Amenities & Safety Standards</h3>
+            <div id="detail-amenities" class="d-flex" style="flex-wrap: wrap; gap: 0.75rem;"></div>
+          </div>
+
+          <!-- Visual Slot Preview Component -->
+          <div class="card">
+            <div class="d-flex justify-between align-center mb-2">
+              <h3>Live Slot Availability Layout</h3>
+              <span class="badge badge-green"><i class="fa-solid fa-satellite-dish"></i> Real-time</span>
+            </div>
+            <p class="muted" style="font-size: 0.85rem;">Browse current slot availability across floors. You can select your preferred spot when booking.</p>
+            <div id="slot-preview-container"></div>
+          </div>
+        </div>
+
+        <!-- Right Column: Booking Action Card & Pricing Summary -->
+        <div>
+          <div class="card" style="position: sticky; top: 90px; border-top: 4px solid var(--primary); box-shadow: var(--shadow-md);">
+            <div style="margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1rem;">
+              <span class="muted" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Standard Tariff</span>
+              <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.25rem;">
+                <span id="price-4w" style="font-size: 2.25rem; font-weight: 800; color: var(--primary-dark);">₹40</span>
+                <span class="muted" style="font-size: 0.9rem;">/ hour (Cars)</span>
+              </div>
+              <div id="price-2w" style="font-size: 0.85rem; color: var(--navy-muted); margin-top: 0.25rem;">
+                ₹15 / hour (Bikes)
+              </div>
+            </div>
+
+            <!-- Key Info List -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; font-size: 0.85rem;">
+              <div class="d-flex justify-between">
+                <span class="muted"><i class="fa-solid fa-clock"></i> Operating Hours</span>
+                <strong id="detail-hours">00:00 - 23:59</strong>
+              </div>
+              <div class="d-flex justify-between">
+                <span class="muted"><i class="fa-solid fa-car"></i> Supported Types</span>
+                <strong id="detail-vehicles">2W, 4W, EV</strong>
+              </div>
+              <div class="d-flex justify-between">
+                <span class="muted"><i class="fa-solid fa-shield"></i> Security Level</span>
+                <strong class="text-success">CCTV Monitored</strong>
+              </div>
+            </div>
+
+            <a id="btn-proceed-booking" href="#" class="btn btn-primary btn-block btn-lg" style="margin-bottom: 0.75rem;">
+              <i class="fa-solid fa-calendar-check"></i> Select Slot & Reserve
+            </a>
+
+            <button type="button" id="btn-compare-detail" class="btn btn-outline btn-block mb-2" style="font-size:0.85rem;">
+              <i class="fa-solid fa-code-compare text-primary"></i> Compare with Other Lots
+            </button>
+
+            <div style="text-align: center; font-size: 0.75rem; color: var(--navy-muted);">
+              <i class="fa-solid fa-circle-check text-primary"></i> Free instant cancellation up to 30 mins before arrival.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Comparison Modal on Details Page -->
+  <div id="detail-compare-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 900px; width: 95%;">
+      <div class="d-flex justify-between align-center mb-2">
+        <h3 style="margin-bottom:0;"><i class="fa-solid fa-code-compare text-primary"></i> Smart Facility Comparison Matrix</h3>
+        <button type="button" class="btn btn-sm btn-outline" id="btn-close-detail-compare">&times;</button>
+      </div>
+      <p class="muted" style="font-size:0.85rem; margin-bottom:1.25rem;">Compare this location's rates, slots, and features against verified partner facilities.</p>
+      <div class="comparison-table-wrapper" id="detail-compare-target"></div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container text-center" style="font-size: 0.85rem; color: #94A3B8;">
+      &copy; 2026 PARKNOVA Platform. College Major Project Prototype.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/parking.js"></script>
+  <script src="js/slots.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = PN.app.getQueryParams();
+      const parkingId = params.id;
+      const loader = document.getElementById('details-loading');
+      const content = document.getElementById('details-content');
+
+      if (!parkingId) {
+        window.location.href = 'find-parking.html';
+        return;
+      }
+
+      const parking = PN.storage.find('parkings', parkingId);
+      if (!parking) {
+        loader.innerHTML = '<div class="empty-state"><h3>Facility Not Found</h3><p>The requested parking lot does not exist or has been removed.</p><a href="find-parking.html" class="btn btn-primary">Back to Map</a></div>';
+        return;
+      }
+
+      loader.classList.add('hidden');
+      content.classList.remove('hidden');
+
+      // Populate Details
+      document.getElementById('breadcrumb-title').textContent = parking.name;
+      document.getElementById('detail-name').textContent = parking.name;
+      document.getElementById('detail-address').textContent = `${parking.address}, ${parking.city}`;
+      document.getElementById('detail-description').textContent = parking.description || 'Modern, well-lit parking facility with dedicated security.';
+      
+      const imgEl = document.getElementById('detail-img');
+      imgEl.src = (parking.images && parking.images[0]) || 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80';
+
+      const avail = PN.map.getAvailabilityStatus(parking.id);
+      document.getElementById('detail-heatmap-badge').innerHTML = `
+        <span class="heatmap-indicator heatmap-${avail.level}" style="font-size:0.85rem; padding:0.35rem 0.85rem; box-shadow:var(--shadow-md);">
+          <span class="heatmap-dot"></span> ${avail.available} / ${avail.total} Slots Available (${avail.label})
+        </span>
+      `;
+
+      // Amenities
+      const amenContainer = document.getElementById('detail-amenities');
+      if (parking.amenities && parking.amenities.length > 0) {
+        amenContainer.innerHTML = parking.amenities.map(a => `
+          <div class="badge badge-neutral" style="padding:0.45rem 0.8rem; font-size:0.8rem;">
+            <i class="fa-solid fa-check text-primary"></i> ${PN.app.escapeHtml(a)}
+          </div>
+        `).join('');
+      } else {
+        amenContainer.innerHTML = '<span class="muted">Standard parking amenities provided.</span>';
+      }
+
+      // Rates & Info
+      document.getElementById('price-4w').textContent = `₹${parking.hourlyRate4W}`;
+      document.getElementById('price-2w').textContent = `₹${parking.hourlyRate2W} / hr (Bikes) | ₹${parking.dailyRate4W} / day (Cars)`;
+      document.getElementById('detail-hours').textContent = `${parking.openTime} - ${parking.closeTime}`;
+      document.getElementById('detail-vehicles').textContent = parking.vehicleTypes ? parking.vehicleTypes.join(', ') : '2W, 4W';
+
+      // Connect Book Button
+      const bookBtn = document.getElementById('btn-proceed-booking');
+      bookBtn.href = `driver/select-slot.html?parkingId=${parking.id}`;
+
+      // Render Visual Slot Preview
+      const previewSlotContainer = document.getElementById('slot-preview-container');
+      PN.slots.initPicker(previewSlotContainer, parking.id, (selectedSlot) => {
+        PN.toast(`Slot ${selectedSlot.slotNumber} selected! Click 'Select Slot & Reserve' to proceed to checkout.`, 'info');
+        bookBtn.href = `driver/booking.html?parkingId=${parking.id}&slotId=${selectedSlot.id}&floorId=${selectedSlot.floorId}`;
+      });
+
+      // Comparison Modal Logic
+      const compareBtn = document.getElementById('btn-compare-detail');
+      const compareModal = document.getElementById('detail-compare-modal');
+      const closeCompareBtn = document.getElementById('btn-close-detail-compare');
+      const compareTarget = document.getElementById('detail-compare-target');
+
+      if (compareBtn && compareModal) {
+        compareBtn.addEventListener('click', () => {
+          const allApproved = PN.parking.getPublicParkings();
+          const list = [parking, ...allApproved.filter(p => p.id !== parking.id)].slice(0, 4);
+
+          compareTarget.innerHTML = `
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th style="min-width:140px;">Metrics</th>
+                  ${list.map(p => `
+                    <th style="min-width:160px; ${p.id === parking.id ? 'background:#F0FDF4; border:2px solid var(--primary);' : ''}">
+                      <div style="font-weight:800; color:var(--navy);">${PN.app.escapeHtml(p.name)}</div>
+                      <div class="muted" style="font-size:0.75rem;"><i class="fa-solid fa-location-dot"></i> ${p.city}</div>
+                      ${p.id === parking.id ? '<span class="badge badge-green" style="margin-top:4px;">Currently Viewing</span>' : ''}
+                    </th>
+                  `).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Car Hourly (4W)</strong></td>
+                  ${list.map(p => `<td><strong class="text-primary" style="font-size:1.1rem;">₹${p.hourlyRate4W}</strong> / hr</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Bike Hourly (2W)</strong></td>
+                  ${list.map(p => `<td>₹${p.hourlyRate2W || 15} / hr</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Full Day Pass (4W)</strong></td>
+                  ${list.map(p => `<td>₹${p.dailyRate4W || (p.hourlyRate4W * 6)} / day</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Live Available Slots</strong></td>
+                  ${list.map(p => {
+                    const a = PN.map.getAvailabilityStatus(p.id);
+                    return `<td><span class="heatmap-indicator heatmap-${a.level}"><span class="heatmap-dot"></span> ${a.available}/${a.total} Slots</span></td>`;
+                  }).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Hours</strong></td>
+                  ${list.map(p => `<td>${p.openTime} - ${p.closeTime}</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Amenities</strong></td>
+                  ${list.map(p => `
+                    <td>
+                      <div style="font-size:0.75rem; display:flex; flex-direction:column; gap:2px;">
+                        ${(p.amenities || ['CCTV', 'Security']).slice(0, 3).map(am => `<span><i class="fa-solid fa-check text-primary"></i> ${PN.app.escapeHtml(am)}</span>`).join('')}
+                      </div>
+                    </td>
+                  `).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Action</strong></td>
+                  ${list.map(p => `
+                    <td>
+                      <a href="driver/select-slot.html?parkingId=${p.id}" class="btn btn-primary btn-sm btn-block">
+                        Reserve Bay
+                      </a>
+                    </td>
+                  `).join('')}
+                </tr>
+              </tbody>
+            </table>
+          `;
+
+          compareModal.classList.add('active');
+        });
+
+        closeCompareBtn.addEventListener('click', () => compareModal.classList.remove('active'));
+        compareModal.addEventListener('click', (e) => {
+          if (e.target === compareModal) compareModal.classList.remove('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

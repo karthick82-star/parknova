@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revenue & Analytics Reports – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge" style="background:#2563EB;">OW</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Owner</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-building-user text-info"></i> Parking Partner</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="manage-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-square-parking"></i> My Facilities
+        </a>
+        <a href="add-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-plus-circle"></i> Add Facility
+        </a>
+        <a href="manage-slots.html" class="sidebar-link">
+          <i class="fa-solid fa-layer-group"></i> Manage Slots & Bays
+        </a>
+        <a href="bookings.html" class="sidebar-link">
+          <i class="fa-solid fa-calendar-check"></i> Bookings & Gate
+        </a>
+        <a href="reports.html" class="sidebar-link active">
+          <i class="fa-solid fa-chart-line"></i> Revenue & Reports
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Owner Portal / <span>Financial & Occupancy Reports</span>
+          </div>
+        </div>
+        <div class="dashboard-topbar-actions">
+          <button class="btn btn-primary btn-sm" id="btn-export-rev-csv">
+            <i class="fa-solid fa-download"></i> Download Revenue CSV
+          </button>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="page-header">
+          <div>
+            <h1>Financial Audits & Bay Performance</h1>
+            <p class="muted">Analyze daily revenue collections, average duration per slot, and export verified CSV spreadsheets.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-outline btn-sm" id="btn-export-book-csv">
+              <i class="fa-solid fa-file-csv text-primary"></i> Export All Bookings CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="stats-grid mb-3">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Verified Revenue</div>
+              <div class="stat-value" id="rep-total-revenue">₹0</div>
+              <div class="stat-subtext">Net earnings across all bays</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Completed Bookings</div>
+              <div class="stat-value" id="rep-total-bookings">0</div>
+              <div class="stat-subtext">Lifetime vehicle sessions</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-warning">
+            <div class="stat-icon"><i class="fa-solid fa-percent"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Avg Bay Occupancy</div>
+              <div class="stat-value" id="rep-avg-occupancy">68%</div>
+              <div class="stat-subtext">Peak turnaround efficiency</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-navy">
+            <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Avg Parking Duration</div>
+              <div class="stat-value" id="rep-avg-duration">2.4 hrs</div>
+              <div class="stat-subtext">Average session stay</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: start;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Daily Revenue Distribution</div>
+              <span class="badge badge-green">Last 7 Days</span>
+            </div>
+            <div style="height: 280px;">
+              <canvas id="ownerDailyRevChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Live Slot Allocation</div>
+              <span class="badge badge-blue">Availability Ratio</span>
+            </div>
+            <div style="height: 280px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="ownerLiveOccChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Facility Breakdown Table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Facility Revenue Breakdown</div>
+            <span class="badge badge-neutral">INR Tariffs</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Facility Name</th>
+                  <th>Location</th>
+                  <th>Total Bookings</th>
+                  <th>Car Rate</th>
+                  <th>Bike Rate</th>
+                  <th>Tax Collected (18% GST)</th>
+                  <th>Net Facility Earnings</th>
+                </tr>
+              </thead>
+              <tbody id="fac-breakdown-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/reports.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('owner');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.businessName || user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      // Facilities strictly belonging to this owner
+      const myParkings = PN.storage.where('parkings', p => p.ownerId === user.id);
+      const myParkingIds = myParkings.map(p => p.id);
+      const myBookings = PN.storage.all('bookings').filter(b => myParkingIds.includes(b.parkingId));
+
+      const validBookings = myBookings.filter(b => b.status !== 'cancelled');
+      const totalRev = validBookings.reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+      
+      document.getElementById('rep-total-revenue').textContent = PN.app.formatCurrency(totalRev);
+      document.getElementById('rep-total-bookings').textContent = validBookings.length;
+
+      // Render Charts
+      PN.reports.renderOwnerCharts(user.id, 'ownerDailyRevChart', 'ownerLiveOccChart');
+
+      // Breakdown Table
+      const tbody = document.getElementById('fac-breakdown-tbody');
+      if (myParkings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center muted" style="padding:2rem;">No facilities registered yet.</td></tr>';
+      } else {
+        tbody.innerHTML = myParkings.map(p => {
+          const pBookings = validBookings.filter(b => b.parkingId === p.id);
+          const pRev = pBookings.reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+          const pTax = pBookings.reduce((sum, b) => sum + (Number(b.taxAmount) || 0), 0);
+
+          return `
+            <tr>
+              <td style="font-weight:700;">${PN.app.escapeHtml(p.name)}</td>
+              <td>${PN.app.escapeHtml(p.address)}, ${PN.app.escapeHtml(p.city)}</td>
+              <td style="font-weight:600;">${pBookings.length} Bookings</td>
+              <td>₹${p.hourlyRate4W}/hr</td>
+              <td>₹${p.hourlyRate2W || 15}/hr</td>
+              <td style="font-weight:600; color:var(--navy-muted);">${PN.app.formatCurrency(pTax)}</td>
+              <td style="font-weight:800; color:var(--primary); font-size:1rem;">${PN.app.formatCurrency(pRev)}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Export Handlers
+      document.getElementById('btn-export-rev-csv').addEventListener('click', () => {
+        PN.reports.exportRevenueCSV(user.id);
+      });
+
+      document.getElementById('btn-export-book-csv').addEventListener('click', () => {
+        PN.reports.exportBookingsCSV(user.id);
+      });
+    });
+  </script>
+</body>
+</html>
+

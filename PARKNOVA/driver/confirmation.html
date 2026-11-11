@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation & QR Ticket – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      .printable-ticket, .printable-ticket * { visibility: visible; }
+      .printable-ticket { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; border: 1px solid #000; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar no-print">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge"><i class="fa-solid fa-user"></i></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Driver</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-car text-primary"></i> Driver Account</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="../find-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-map-location-dot"></i> Find & Book
+        </a>
+        <a href="my-bookings.html" class="sidebar-link active">
+          <i class="fa-solid fa-ticket"></i> My Bookings
+        </a>
+        <a href="parking-history.html" class="sidebar-link">
+          <i class="fa-solid fa-clock-rotate-left"></i> Parking History
+        </a>
+        <a href="profile.html" class="sidebar-link">
+          <i class="fa-solid fa-user-gear"></i> My Vehicles & Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar no-print">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Driver Portal / <a href="my-bookings.html">My Bookings</a> / <span>Ticket Confirmation</span>
+          </div>
+        </div>
+        <div class="dashboard-topbar-actions">
+          <a href="dashboard.html" class="btn btn-outline btn-sm">
+            <i class="fa-solid fa-house"></i> Home
+          </a>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        
+        <div class="text-center no-print" style="max-width: 600px; margin: 0 auto 2rem;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--success-bg); color: var(--success); display: grid; place-items: center; font-size: 1.75rem; margin: 0 auto 1rem;">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h1>Booking Confirmed!</h1>
+          <p class="muted">Your smart parking slot is reserved. Present this digital QR ticket at the facility entrance barrier.</p>
+        </div>
+
+        <!-- Printable QR Ticket Wrapper -->
+        <div class="ticket-wrapper printable-ticket">
+          <div class="ticket-card">
+            
+            <div class="ticket-header">
+              <div class="brand-logo">
+                <i class="fa-solid fa-square-parking"></i>
+                <span>PARK</span>NOVA
+              </div>
+              <h2>Digital Parking Pass</h2>
+              <div style="font-size: 0.75rem; opacity: 0.85;">Contactless Boom-Barrier Access</div>
+            </div>
+
+            <div class="ticket-body">
+              
+              <!-- Countdown Box -->
+              <div class="countdown-box no-print" id="ticket-countdown-container">
+                <div class="countdown-title">Arrival Countdown</div>
+                <div id="countdown-display" class="countdown-digits">--:--:--</div>
+              </div>
+
+              <!-- QR Code & ID -->
+              <div class="ticket-qr-container">
+                <div id="qrcode-target" class="ticket-qr-code"></div>
+                <div class="ticket-id" id="ticket-booking-id">PN-000000-0000</div>
+                <div style="font-size: 0.75rem; color: var(--navy-muted); margin-top: 4px;">
+                  Scan at Automated Boom Barrier
+                </div>
+              </div>
+
+              <!-- Ticket Details List -->
+              <div class="ticket-details-list">
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Facility</span>
+                  <span class="ticket-row-value" id="ticket-facility">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Address</span>
+                  <span class="ticket-row-value" id="ticket-address" style="text-align: right; max-width: 220px;">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Reserved Slot</span>
+                  <span class="ticket-row-value text-primary" id="ticket-slot" style="font-size: 1.1rem;">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Vehicle</span>
+                  <span class="ticket-row-value" id="ticket-vehicle">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Arrival Window</span>
+                  <span class="ticket-row-value" id="ticket-start-time">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Valid Until</span>
+                  <span class="ticket-row-value" id="ticket-end-time">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Paid Amount</span>
+                  <span class="ticket-row-value text-success" id="ticket-amount">--</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Payment Status</span>
+                  <span class="badge badge-green"><i class="fa-solid fa-check"></i> Paid Online</span>
+                </div>
+                <div class="ticket-row">
+                  <span class="ticket-row-label">Live Barrier Status</span>
+                  <span id="ticket-barrier-status" class="badge badge-blue">Reserved / Awaiting Arrival</span>
+                </div>
+              </div>
+
+              <!-- Interactive Barrier Gate Simulation (For Live Major Project Demo) -->
+              <div class="no-print mb-3" style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:var(--radius-sm); padding:0.85rem; text-align:center;">
+                <div style="font-size:0.75rem; font-weight:700; color:#166534; text-transform:uppercase; margin-bottom:0.4rem;">
+                  <i class="fa-solid fa-tower-broadcast"></i> Interactive Smart Gate Simulator
+                </div>
+                <div id="barrier-action-container">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+
+              <!-- Simulation Notice -->
+              <div class="sim-label text-center mb-3">
+                <i class="fa-solid fa-flask"></i> Digital Smart Pass • 100% Guaranteed Space • Firebase Cloud Synchronized
+              </div>
+
+              <!-- Actions -->
+              <div class="d-flex gap-2 flex-wrap no-print">
+                <button type="button" class="btn btn-outline btn-block" onclick="window.print()">
+                  <i class="fa-solid fa-print"></i> Print / Save PDF
+                </button>
+                <a id="btn-directions" href="#" target="_blank" class="btn btn-outline btn-block">
+                  <i class="fa-solid fa-location-arrow"></i> Get Directions
+                </a>
+                <a href="my-bookings.html" class="btn btn-primary btn-block">
+                  <i class="fa-solid fa-list-check"></i> View in My Bookings
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/booking.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('driver');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      const params = PN.app.getQueryParams();
+      const bookingId = params.id;
+
+      if (!bookingId) {
+        window.location.href = 'my-bookings.html';
+        return;
+      }
+
+      const booking = PN.storage.find('bookings', bookingId);
+      if (!booking) {
+        PN.toast('Booking reference not found.', 'error');
+        window.location.href = 'my-bookings.html';
+        return;
+      }
+
+      // Populate Ticket Data
+      document.getElementById('ticket-booking-id').textContent = booking.id;
+      document.getElementById('ticket-facility').textContent = booking.parkingName;
+      document.getElementById('ticket-address').textContent = booking.parkingAddress;
+      document.getElementById('ticket-slot').textContent = `${booking.slotNumber} (${booking.floorName})`;
+      document.getElementById('ticket-vehicle').textContent = `${booking.vehiclePlate} • ${booking.vehicleType}`;
+      document.getElementById('ticket-start-time').textContent = PN.app.formatDateTime(booking.startTime);
+      document.getElementById('ticket-end-time').textContent = PN.app.formatDateTime(booking.endTime);
+      document.getElementById('ticket-amount').textContent = PN.app.formatCurrency(booking.totalAmount);
+
+      // Directions Link
+      const dirBtn = document.getElementById('btn-directions');
+      dirBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.parkingName + ' ' + booking.parkingAddress)}`;
+
+      // Render QR Code using QRCode.js
+      const qrTarget = document.getElementById('qrcode-target');
+      PN.booking.renderQRCode(qrTarget, booking.qrData || booking.id, 160);
+
+      // Start Countdown Timer
+      const countdownEl = document.getElementById('countdown-display');
+      PN.booking.startCountdown(booking.startTime, countdownEl);
+
+      // Interactive Barrier Simulator Logic
+      const barrierStatusEl = document.getElementById('ticket-barrier-status');
+      const barrierActionContainer = document.getElementById('barrier-action-container');
+
+      function updateBarrierUI() {
+        const currentBooking = PN.storage.find('bookings', bookingId);
+        if (!currentBooking) return;
+
+        if (currentBooking.status === 'confirmed') {
+          barrierStatusEl.className = 'badge badge-blue';
+          barrierStatusEl.textContent = 'Reserved / Awaiting Arrival';
+          barrierActionContainer.innerHTML = `
+            <p style="font-size:0.75rem; color:#166534; margin-bottom:0.5rem;">Simulate driver driving up to the boom barrier and scanning this QR ticket.</p>
+            <button type="button" class="btn btn-primary btn-sm btn-block" id="btn-simulate-entry">
+              <i class="fa-solid fa-barcode"></i> Scan at Entry Barrier (Drive-In)
+            </button>
+          `;
+
+          document.getElementById('btn-simulate-entry').addEventListener('click', () => {
+            PN.storage.update('bookings', bookingId, {
+              status: 'checked-in',
+              entryTime: new Date().toISOString()
+            });
+            PN.toast('Boom Barrier Raised! Driver checked in and bay marked occupied.', 'success');
+            updateBarrierUI();
+          });
+        } else if (currentBooking.status === 'checked-in') {
+          barrierStatusEl.className = 'badge badge-yellow';
+          barrierStatusEl.textContent = 'Parked in Bay (Active Session)';
+          barrierActionContainer.innerHTML = `
+            <p style="font-size:0.75rem; color:#854D0E; margin-bottom:0.5rem;">Vehicle currently parked in bay ${currentBooking.slotNumber}. Simulate exit scan to free bay.</p>
+            <button type="button" class="btn btn-outline btn-sm btn-block" id="btn-simulate-exit" style="border-color:var(--primary); color:var(--primary-dark);">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i> Scan at Exit Barrier (Drive-Out)
+            </button>
+          `;
+
+          document.getElementById('btn-simulate-exit').addEventListener('click', () => {
+            PN.storage.update('bookings', bookingId, {
+              status: 'completed',
+              exitTime: new Date().toISOString()
+            });
+            PN.toast('Exit Barrier Raised! Parking session completed and archived to history.', 'success');
+            updateBarrierUI();
+          });
+        } else if (currentBooking.status === 'completed') {
+          barrierStatusEl.className = 'badge badge-green';
+          barrierStatusEl.textContent = 'Session Completed (Archived)';
+          barrierActionContainer.innerHTML = `
+            <div style="font-size:0.8rem; font-weight:700; color:#166534;">
+              <i class="fa-solid fa-circle-check"></i> Session Verified & Exited
+            </div>
+            <a href="parking-history.html" class="btn btn-outline btn-sm mt-1" style="font-size:0.75rem;">
+              View in Parking History
+            </a>
+          `;
+        } else if (currentBooking.status === 'cancelled') {
+          barrierStatusEl.className = 'badge badge-red';
+          barrierStatusEl.textContent = 'Cancelled';
+          barrierActionContainer.innerHTML = '<span class="text-danger" style="font-size:0.8rem;">This reservation was cancelled.</span>';
+        }
+      }
+
+      updateBarrierUI();
+    });
+  </script>
+</body>
+</html>
+

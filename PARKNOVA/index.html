@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARKNOVA – Smart Parking Discovery and Reservation Platform</title>
+  <meta name="description" content="Find Your Space. Park with Confidence. Real-time smart parking discovery and booking across India.">
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- PARKNOVA Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/parking.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body data-root="">
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-square-parking"></i>
+        <span>PARK</span>NOVA
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="find-parking.html">Find Parking</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#for-owners">For Owners</a>
+      </nav>
+
+      <div class="nav-cta">
+        <!-- Dynamically populated by js/navigation.js -->
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+
+      <button class="nav-toggle-btn" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" style="background: linear-gradient(135deg, #172B3A 0%, #0F1E29 100%); color: white; padding: 5rem 0 4rem; position: relative; overflow: hidden;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center;">
+        <div>
+          <span class="badge badge-green" style="margin-bottom: 1rem; font-size: 0.8rem;">
+            <i class="fa-solid fa-bolt"></i> Next-Gen Smart Mobility
+          </span>
+          <h1 style="color: white; font-size: 3rem; line-height: 1.15; margin-bottom: 1.25rem;">
+            Find Your Space.<br><span style="color: #16A36A;">Park with Confidence.</span>
+          </h1>
+          <p style="color: #94A3B8; font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">
+            Discover verified parking facilities, reserve guaranteed slots in advance, and enjoy contactless QR entry across Tiruchirappalli, Chennai, Bengaluru, and major metro hubs.
+          </p>
+
+          <!-- Quick Search Bar Form -->
+          <div style="background: white; border-radius: var(--radius-md); padding: 0.85rem; box-shadow: var(--shadow-lg);">
+            <form action="find-parking.html" method="GET" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <div style="flex: 1.5; min-width: 180px; position: relative;">
+                <i class="fa-solid fa-location-dot" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--navy-muted);"></i>
+                <input type="text" name="city" placeholder="City or Landmark (e.g. Tiruchirappalli)" class="form-control" style="padding-left: 2.4rem; border: none; background: #F8FAFC;">
+              </div>
+              <div style="flex: 1; min-width: 140px;">
+                <select name="type" class="form-control" style="border: none; background: #F8FAFC;">
+                  <option value="all">All Vehicles</option>
+                  <option value="4W">Car (4W)</option>
+                  <option value="2W">Bike (2W)</option>
+                  <option value="EV">EV Charging</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
+                <i class="fa-solid fa-magnifying-glass"></i> Find Parking
+              </button>
+            </form>
+          </div>
+
+          <div style="display: flex; gap: 2rem; margin-top: 2rem; color: #CBD5E1; font-size: 0.85rem;">
+            <div><i class="fa-solid fa-check text-primary"></i> 100% Guaranteed Slots</div>
+            <div><i class="fa-solid fa-check text-primary"></i> Contactless QR Ticket</div>
+            <div><i class="fa-solid fa-check text-primary"></i> Zero Booking Fees</div>
+          </div>
+        </div>
+
+        <div style="position: relative;">
+          <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80" 
+               alt="Smart Parking Management" 
+               style="border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); border: 4px solid rgba(255,255,255,0.1); width: 100%; height: 380px; object-fit: cover;">
+          <div style="position: absolute; bottom: -15px; left: -15px; background: white; padding: 1rem 1.25rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); color: var(--navy); display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--success-bg); color: var(--success); display: grid; place-items: center; font-size: 1.25rem;">
+              <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem;">Instant QR Access</div>
+              <div style="font-size: 0.75rem; color: var(--navy-muted);">Fast, touchless entry & exit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" style="padding: 5rem 0; background: white;">
+    <div class="container">
+      <div class="text-center" style="max-width: 600px; margin: 0 auto 3.5rem;">
+        <span class="badge badge-green" style="margin-bottom: 0.5rem;">Simple & Fast</span>
+        <h2>How PARKNOVA Works</h2>
+        <p class="muted">Three effortless steps to never worry about city parking ever again.</p>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card card-hover text-center" style="padding: 2.5rem 1.75rem;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: grid; place-items: center; font-size: 1.75rem; margin: 0 auto 1.5rem;">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+          <h3>1. Search & Compare</h3>
+          <p class="muted">Find verified lots near your destination on our live map. Compare hourly rates, security amenities, and EV chargers.</p>
+        </div>
+
+        <div class="card card-hover text-center" style="padding: 2.5rem 1.75rem;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--info-bg); color: var(--info); display: grid; place-items: center; font-size: 1.75rem; margin: 0 auto 1.5rem;">
+            <i class="fa-solid fa-square-check"></i>
+          </div>
+          <h3>2. Select Slot & Reserve</h3>
+          <p class="muted">Pick your exact spot from the interactive multi-floor visual map. Confirm duration with transparent pricing breakdown.</p>
+        </div>
+
+        <div class="card card-hover text-center" style="padding: 2.5rem 1.75rem;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--success-bg); color: var(--success); display: grid; place-items: center; font-size: 1.75rem; margin: 0 auto 1.5rem;">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <h3>3. Scan QR & Park</h3>
+          <p class="muted">Receive an instant digital QR ticket. Drive in, scan at the smart boom barrier, and park stress-free.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Parking Locations Section -->
+  <section style="padding: 5rem 0; background: var(--bg-light);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+        <div>
+          <span class="badge badge-green" style="margin-bottom: 0.5rem;">Verified Spaces</span>
+          <h2>Popular Parking Locations</h2>
+          <p class="muted" style="margin-bottom: 0;">Top-rated smart facilities currently welcoming drivers.</p>
+        </div>
+        <a href="find-parking.html" class="btn btn-outline">
+          View All on Map <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <div id="popular-parking-grid" class="grid grid-3">
+        <!-- Dynamically populated from storage.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Features Section -->
+  <section id="features" style="padding: 5rem 0; background: white;">
+    <div class="container">
+      <div class="text-center" style="max-width: 650px; margin: 0 auto 3.5rem;">
+        <span class="badge badge-blue" style="margin-bottom: 0.5rem;">Platform Intelligence</span>
+        <h2>Designed for Real-World Cities</h2>
+        <p class="muted">Engineered to eliminate traffic bottlenecks and fuel wastage caused by endless parking searches.</p>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="card">
+          <i class="fa-solid fa-fire-flame-curved text-danger" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <h4>Availability Heatmap</h4>
+          <p class="muted" style="font-size: 0.85rem;">Live color-coded status (Green, Yellow, Red) gives you instant visual confirmation of lot density.</p>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-layer-group text-primary" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <h4>Visual Slot Picker</h4>
+          <p class="muted" style="font-size: 0.85rem;">Choose Ground floor or Multi-level bays with icons tailored to cars, bikes, and EVs.</p>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-calculator text-warning" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <h4>Transparent Calculator</h4>
+          <p class="muted" style="font-size: 0.85rem;">Know exactly what you pay with itemized hourly rates and GST breakdown before confirming.</p>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-shield-halved text-primary" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <h4>Double-Booking Proof</h4>
+          <p class="muted" style="font-size: 0.85rem;">Built-in collision algorithm strictly blocks simultaneous reservation of the same bay.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two Roles Benefit Section -->
+  <section id="for-owners" style="padding: 5rem 0; background: #F8FAFC;">
+    <div class="container">
+      <div class="grid grid-2" style="gap: 2.5rem; align-items: stretch;">
+        <!-- Drivers Card -->
+        <div class="card" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 0.5rem;">For Drivers</div>
+          <h3 style="margin-bottom: 1rem;">Never Circle the Block Again</h3>
+          <p class="muted">Say goodbye to stressful parking hunts during peak office hours and festive seasons.</p>
+          <ul style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+            <li class="d-flex align-center gap-1"><i class="fa-solid fa-circle-check text-primary"></i> Pre-book your slot hours or days in advance</li>
+            <li class="d-flex align-center gap-1"><i class="fa-solid fa-circle-check text-primary"></i> Dedicated slots for 2W, 4W and EV Charging</li>
+            <li class="d-flex align-center gap-1"><i class="fa-solid fa-circle-check text-primary"></i> Transparent digital receipts & parking history</li>
+          </ul>
+          <a href="register.html?role=driver" class="btn btn-primary">Join as Driver</a>
+        </div>
+
+        <!-- Parking Owners Card -->
+        <div class="card" style="padding: 2.5rem; border-top: 4px solid var(--navy);">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--navy); text-transform: uppercase; margin-bottom: 0.5rem;">For Parking Owners</div>
+          <h3 style="margin-bottom: 1rem;">Turn Unused Spaces into Revenue</h3>
+          <p class="muted">List your parking facility, manage multi-tier bays, set custom tariffs, and monitor occupancy.</p>
+          <ul style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+            <li class="d-flex align-center gap-1"><i class="fa-solid fa-circle-check text-primary"></i> Multi-floor & slot configuration dashboard</li>
+            <li class="d-flex align-center gap-1"><i class="fa-solid fa-circle-check text-primary"></i> Live revenue tracking & occupancy analytics</li>
+            <li class="d-flex align-center gap-1"><i class="fa-solid fa-circle-check text-primary"></i> Automated check-in/check-out management</li>
+          </ul>
+          <a href="register.html?role=owner" class="btn btn-secondary">Register as Owner</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section style="background: var(--navy); color: white; padding: 4rem 0; text-align: center;">
+    <div class="container" style="max-width: 720px;">
+      <h2 style="color: white; margin-bottom: 1rem;">Ready to Experience Stress-Free Parking?</h2>
+      <p style="color: #94A3B8; font-size: 1.1rem; margin-bottom: 2rem;">
+        Join thousands of drivers who reserve their spot before leaving home.
+      </p>
+      <div class="d-flex align-center justify-between" style="justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="find-parking.html" class="btn btn-primary btn-lg">Find Parking Now</a>
+        <a href="register.html" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.3);">Create Free Account</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo">
+            <i class="fa-solid fa-square-parking"></i>
+            <span>PARK</span>NOVA
+          </a>
+          <p>Find Your Space. Park with Confidence. Real-time smart parking discovery and reservation platform for Indian cities.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="find-parking.html">Find Nearby Parking</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#features">Smart Features</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Portals</h4>
+          <ul class="footer-links">
+            <li><a href="login.html">Driver Sign In</a></li>
+            <li><a href="login.html">Owner Sign In</a></li>
+            <li><a href="login.html">Admin Access</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>College Major Project</h4>
+          <ul class="footer-links">
+            <li><span style="color: #94A3B8; font-size: 0.85rem;">Tech: HTML5, CSS3, Vanilla JS</span></li>
+            <li><span style="color: #94A3B8; font-size: 0.85rem;">Storage: LocalStorage (Demo Mode)</span></li>
+            <li><span style="color: #94A3B8; font-size: 0.85rem;">Year: 2026 Prototype</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 PARKNOVA Platform. Developed for College Major Project Demonstration.</div>
+        <div>All sample data & tickets are simulated for demonstration purposes.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/parking.js"></script>
+
+  <script>
+    // Populate Popular Parking Cards
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('popular-parking-grid');
+      if (!grid) return;
+
+      const parkings = PN.parking.getPublicParkings().slice(0, 3);
+      if (parkings.length === 0) {
+        grid.innerHTML = '<div class="empty-state">No approved parking lots available at the moment.</div>';
+        return;
+      }
+
+      grid.innerHTML = parkings.map(p => PN.parking.createParkingCardHtml(p)).join('');
+    });
+  </script>
+</body>
+</html>
+

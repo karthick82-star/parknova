@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Facility Bookings & Gate – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge" style="background:#2563EB;">OW</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Owner</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-building-user text-info"></i> Parking Partner</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="manage-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-square-parking"></i> My Facilities
+        </a>
+        <a href="add-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-plus-circle"></i> Add Facility
+        </a>
+        <a href="manage-slots.html" class="sidebar-link">
+          <i class="fa-solid fa-layer-group"></i> Manage Slots & Bays
+        </a>
+        <a href="bookings.html" class="sidebar-link active">
+          <i class="fa-solid fa-calendar-check"></i> Bookings & Gate
+        </a>
+        <a href="reports.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-line"></i> Revenue & Reports
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Owner Portal / <span>Facility Gate & Reservations</span>
+          </div>
+        </div>
+        <div class="dashboard-topbar-actions">
+          <button class="btn btn-outline btn-sm" id="btn-export-bookings">
+            <i class="fa-solid fa-file-csv text-primary"></i> Export CSV
+          </button>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="page-header">
+          <div>
+            <h1>Facility Reservations & Barrier Control</h1>
+            <p class="muted">Check-in arriving drivers, verify digital QR passes, and oversee bay turnover.</p>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-group">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="search-owner-bookings" class="form-control" placeholder="Search by Ticket ID, plate, or driver...">
+            </div>
+            
+            <select id="filter-owner-facility" class="form-control" style="width: auto;">
+              <option value="all">All Facilities</option>
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <button type="button" class="btn btn-sm btn-primary filter-obtn active" data-status="all">All</button>
+            <button type="button" class="btn btn-sm btn-outline filter-obtn" data-status="confirmed">Upcoming</button>
+            <button type="button" class="btn btn-sm btn-outline filter-obtn" data-status="checked-in">Checked-In</button>
+            <button type="button" class="btn btn-sm btn-outline filter-obtn" data-status="completed">Completed</button>
+            <button type="button" class="btn btn-sm btn-outline filter-obtn" data-status="cancelled">Cancelled</button>
+          </div>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Facility & Bay</th>
+                  <th>Vehicle Plate</th>
+                  <th>Driver Info</th>
+                  <th>Scheduled Window</th>
+                  <th>Total Fee</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Gate Actions</th>
+                </tr>
+              </thead>
+              <tbody id="owner-bookings-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/reports.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('owner');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.businessName || user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      // Facilities strictly belonging to this owner
+      const myParkings = PN.storage.where('parkings', p => p.ownerId === user.id);
+      const myParkingIds = myParkings.map(p => p.id);
+
+      const facFilter = document.getElementById('filter-owner-facility');
+      myParkings.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        facFilter.appendChild(opt);
+      });
+
+      const params = PN.app.getQueryParams();
+      if (params.parkingId && myParkingIds.includes(params.parkingId)) {
+        facFilter.value = params.parkingId;
+      }
+
+      let currentStatusFilter = 'all';
+      const searchInput = document.getElementById('search-owner-bookings');
+      const tbody = document.getElementById('owner-bookings-tbody');
+      const filterBtns = document.querySelectorAll('.filter-obtn');
+
+      function renderBookings() {
+        const query = searchInput.value.trim().toLowerCase();
+        const selectedFacility = facFilter.value;
+
+        let bookings = PN.storage.all('bookings').filter(b => myParkingIds.includes(b.parkingId));
+
+        if (selectedFacility !== 'all') {
+          bookings = bookings.filter(b => b.parkingId === selectedFacility);
+        }
+
+        if (currentStatusFilter !== 'all') {
+          bookings = bookings.filter(b => b.status === currentStatusFilter);
+        }
+
+        if (query) {
+          bookings = bookings.filter(b => 
+            b.id.toLowerCase().includes(query) ||
+            b.vehiclePlate.toLowerCase().includes(query) ||
+            b.slotNumber.toLowerCase().includes(query)
+          );
+        }
+
+        bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        if (bookings.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="text-center" style="padding: 3rem 1rem;">
+                <div class="empty-state" style="padding: 1rem;">
+                  <i class="fa-solid fa-car empty-state-icon" style="font-size: 2.5rem;"></i>
+                  <h3>No Bookings Found</h3>
+                  <p>No bookings match the selected criteria.</p>
+                </div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = bookings.map(b => {
+          const driverUser = PN.storage.find('users', b.userId);
+          const driverName = driverUser ? driverUser.name : 'Registered Driver';
+          const driverPhone = driverUser ? driverUser.phone : 'N/A';
+
+          let badgeClass = 'badge-blue';
+          let statusLabel = 'Confirmed';
+          if (b.status === 'checked-in') { badgeClass = 'badge-yellow'; statusLabel = 'Checked In (Parked)'; }
+          else if (b.status === 'completed') { badgeClass = 'badge-green'; statusLabel = 'Completed'; }
+          else if (b.status === 'cancelled') { badgeClass = 'badge-red'; statusLabel = 'Cancelled'; }
+
+          return `
+            <tr>
+              <td style="font-family:var(--font-mono); font-weight:700;">${b.id}</td>
+              <td>
+                <div style="font-weight:700;">${PN.app.escapeHtml(b.parkingName)}</div>
+                <div class="muted" style="font-size:0.75rem;">Slot ${b.slotNumber} (${b.floorName})</div>
+              </td>
+              <td>
+                <div style="font-weight:700; color:var(--navy);">${b.vehiclePlate}</div>
+                <div class="muted" style="font-size:0.75rem;">${b.vehicleType}</div>
+              </td>
+              <td>
+                <div style="font-weight:600;">${PN.app.escapeHtml(driverName)}</div>
+                <div class="muted" style="font-size:0.75rem;">${driverPhone}</div>
+              </td>
+              <td>
+                <div style="font-size:0.8rem; font-weight:600;">${PN.app.formatDateTime(b.startTime)}</div>
+                <div class="muted" style="font-size:0.75rem;">Till: ${PN.app.formatDateTime(b.endTime)}</div>
+              </td>
+              <td style="font-weight:800; color:var(--primary);">${PN.app.formatCurrency(b.totalAmount)}</td>
+              <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
+              <td style="text-align: right; white-space: nowrap;">
+                ${b.status === 'confirmed' ? `
+                  <button type="button" class="btn btn-primary btn-sm btn-gate-action" data-action="checkin" data-id="${b.id}">
+                    <i class="fa-solid fa-barcode"></i> Barrier IN
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm btn-gate-action" data-action="cancel" data-id="${b.id}" title="Cancel booking">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                ` : ''}
+
+                ${b.status === 'checked-in' ? `
+                  <button type="button" class="btn btn-outline btn-sm btn-gate-action" data-action="checkout" data-id="${b.id}" style="border-color:var(--primary); color:var(--primary-dark);">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Barrier OUT
+                  </button>
+                ` : ''}
+
+                ${b.status === 'completed' || b.status === 'cancelled' ? `
+                  <span class="muted" style="font-size:0.75rem;"><i class="fa-solid fa-check-double"></i> Archived</span>
+                ` : ''}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Attach gate action buttons
+        tbody.querySelectorAll('.btn-gate-action').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const bId = btn.dataset.id;
+            const action = btn.dataset.action;
+
+            if (action === 'checkin') {
+              PN.storage.update('bookings', bId, {
+                status: 'checked-in',
+                entryTime: new Date().toISOString()
+              });
+              PN.toast(`Barrier opened! Booking ${bId} marked Checked-In.`, 'success');
+              renderBookings();
+            } else if (action === 'checkout') {
+              PN.storage.update('bookings', bId, {
+                status: 'completed',
+                exitTime: new Date().toISOString()
+              });
+              PN.toast(`Exit barrier opened! Booking ${bId} completed and slot freed.`, 'success');
+              renderBookings();
+            } else if (action === 'cancel') {
+              const ok = await PN.confirm('Cancel Booking?', `Cancel booking ${bId}? The customer will be refunded in demo balance.`);
+              if (ok) {
+                PN.booking.cancelBooking(bId, 'Cancelled by parking owner');
+                PN.toast('Booking cancelled.', 'info');
+                renderBookings();
+              }
+            }
+          });
+        });
+      }
+
+      // Filter events
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('btn-primary', 'active');
+            b.classList.add('btn-outline');
+          });
+          btn.classList.remove('btn-outline');
+          btn.classList.add('btn-primary', 'active');
+          currentStatusFilter = btn.dataset.status;
+          renderBookings();
+        });
+      });
+
+      facFilter.addEventListener('change', renderBookings);
+      searchInput.addEventListener('input', renderBookings);
+
+      // Export CSV
+      document.getElementById('btn-export-bookings').addEventListener('click', () => {
+        PN.reports.exportBookingsCSV(user.id);
+      });
+
+      renderBookings();
+    });
+  </script>
+</body>
+</html>
+

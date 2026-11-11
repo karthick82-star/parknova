@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin SuperPanel – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge" style="background:#7C3AED;">PA</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">SuperAdmin</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-shield-halved text-warning"></i> Platform Admin</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link active">
+          <i class="fa-solid fa-gauge-high"></i> Platform Overview
+        </a>
+        <a href="parking-management.html" class="sidebar-link">
+          <i class="fa-solid fa-square-parking"></i> Parking Facilities
+          <span id="nav-pending-badge" class="badge badge-yellow" style="margin-left:auto; display:none;">0</span>
+        </a>
+        <a href="drivers.html" class="sidebar-link">
+          <i class="fa-solid fa-users"></i> Driver Accounts
+        </a>
+        <a href="owners.html" class="sidebar-link">
+          <i class="fa-solid fa-building-user"></i> Parking Owners
+        </a>
+        <a href="booking-management.html" class="sidebar-link">
+          <i class="fa-solid fa-ticket"></i> Master Bookings
+        </a>
+        <a href="reports.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-pie"></i> Analytics & Exports
+        </a>
+        <a href="feedback.html" class="sidebar-link">
+          <i class="fa-solid fa-comments"></i> Complaints & Feedback
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            SuperAdmin / <span>Platform Central Control</span>
+          </div>
+        </div>
+        <div class="dashboard-topbar-actions">
+          <a href="parking-management.html?filter=pending" class="btn btn-warning btn-sm" id="btn-pending-action" style="display:none;">
+            <i class="fa-solid fa-clock"></i> <span id="pending-alert-text">Review Pending Locations</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="page-header">
+          <div>
+            <h1>PARKNOVA Central Platform Dashboard</h1>
+            <p class="muted">Live overview of drivers, parking owners, approval queues, system transactions, and platform revenues.</p>
+          </div>
+        </div>
+
+        <!-- 7 Platform Metric Cards (Section 7 Requirements) -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Drivers</div>
+              <div class="stat-value" id="adm-stat-drivers">0</div>
+              <div class="stat-subtext">Registered users</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fa-solid fa-building-user"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Parking Owners</div>
+              <div class="stat-value" id="adm-stat-owners">0</div>
+              <div class="stat-subtext">Commercial partners</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-navy">
+            <div class="stat-icon"><i class="fa-solid fa-warehouse"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Locations</div>
+              <div class="stat-value" id="adm-stat-parkings">0</div>
+              <div class="stat-subtext">Registered facilities</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Approved Locations</div>
+              <div class="stat-value" id="adm-stat-approved">0</div>
+              <div class="stat-subtext">Publicly bookable</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-warning">
+            <div class="stat-icon"><i class="fa-solid fa-hourglass-start"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Pending Approvals</div>
+              <div class="stat-value" id="adm-stat-pending">0</div>
+              <div class="stat-subtext">Awaiting admin review</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Bookings</div>
+              <div class="stat-value" id="adm-stat-bookings">0</div>
+              <div class="stat-subtext">Platform-wide orders</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-value" id="adm-stat-revenue">₹0</div>
+              <div class="stat-subtext">Gross platform GMV</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Approval Alert Box (If any facilities need approval) -->
+        <div id="pending-alert-banner" class="alert alert-warning hidden">
+          <i class="fa-solid fa-bell" style="font-size: 1.25rem;"></i>
+          <div style="flex: 1;">
+            <strong>Urgent Approval Required:</strong> You have <span id="pending-count-num">1</span> new parking facility submission pending review. Review safety standards and approve to make it visible to drivers.
+          </div>
+          <a href="parking-management.html?filter=pending" class="btn btn-warning btn-sm">
+            Review Queue
+          </a>
+        </div>
+
+        <!-- Charts Row -->
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: start;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Platform Gross Revenue (Monthly Trend)</div>
+              <span class="badge badge-green">INR Collections</span>
+            </div>
+            <div style="height: 270px;">
+              <canvas id="adminRevChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Booking Status Distribution</div>
+              <span class="badge badge-blue">Global Ratio</span>
+            </div>
+            <div style="height: 270px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="adminBookChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Columns: Recent Platform Bookings & Recent Feedback -->
+        <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem; align-items: start;">
+          <!-- Recent Bookings Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Live Platform Bookings</div>
+              <a href="booking-management.html" class="btn btn-outline btn-sm">View All</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Facility</th>
+                    <th>Slot</th>
+                    <th>Driver</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="adm-recent-bookings-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pending Complaints & Feedback Preview -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Driver Feedback & Tickets</div>
+              <a href="feedback.html" class="btn btn-outline btn-sm">Manage</a>
+            </div>
+            <div id="adm-recent-feedback-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/reports.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('admin');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || 'AD';
+
+      // Load Platform Data
+      const users = PN.storage.all('users');
+      const drivers = users.filter(u => u.role === 'driver');
+      const owners = users.filter(u => u.role === 'owner');
+      const parkings = PN.storage.all('parkings');
+      const approved = parkings.filter(p => p.status === 'approved');
+      const pending = parkings.filter(p => p.status === 'pending');
+      const bookings = PN.storage.all('bookings');
+      const totalRev = bookings
+        .filter(b => b.status !== 'cancelled')
+        .reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+
+      // Populate Cards
+      document.getElementById('adm-stat-drivers').textContent = drivers.length;
+      document.getElementById('adm-stat-owners').textContent = owners.length;
+      document.getElementById('adm-stat-parkings').textContent = parkings.length;
+      document.getElementById('adm-stat-approved').textContent = approved.length;
+      document.getElementById('adm-stat-pending').textContent = pending.length;
+      document.getElementById('adm-stat-bookings').textContent = bookings.length;
+      document.getElementById('adm-stat-revenue').textContent = PN.app.formatCurrency(totalRev);
+
+      // Pending alert
+      if (pending.length > 0) {
+        const badge = document.getElementById('nav-pending-badge');
+        badge.textContent = pending.length;
+        badge.style.display = 'inline-block';
+
+        const alertBanner = document.getElementById('pending-alert-banner');
+        alertBanner.classList.remove('hidden');
+        document.getElementById('pending-count-num').textContent = pending.length;
+
+        const btnPending = document.getElementById('btn-pending-action');
+        btnPending.style.display = 'inline-flex';
+        document.getElementById('pending-alert-text').textContent = `${pending.length} Pending Approval`;
+      }
+
+      // Render Admin Charts
+      PN.reports.renderAdminCharts('adminRevChart', 'adminBookChart');
+
+      // Populate Recent Bookings Table
+      const tbody = document.getElementById('adm-recent-bookings-tbody');
+      const recent = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+      if (recent.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center muted">No bookings yet.</td></tr>';
+      } else {
+        tbody.innerHTML = recent.map(b => {
+          const driver = users.find(u => u.id === b.userId);
+          let badgeClass = 'badge-green';
+          if (b.status === 'confirmed') badgeClass = 'badge-blue';
+          else if (b.status === 'cancelled') badgeClass = 'badge-red';
+
+          return `
+            <tr>
+              <td><a href="booking-management.html?search=${b.id}" style="font-family:var(--font-mono); font-weight:700;">${b.id}</a></td>
+              <td style="font-weight:600;">${PN.app.escapeHtml(b.parkingName)}</td>
+              <td><span class="badge badge-neutral">${b.slotNumber}</span></td>
+              <td>${PN.app.escapeHtml(driver ? driver.name : 'Driver')}</td>
+              <td style="font-weight:700;">${PN.app.formatCurrency(b.totalAmount)}</td>
+              <td><span class="badge ${badgeClass}">${b.status}</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Populate Complaints / Feedback Preview
+      const fbContainer = document.getElementById('adm-recent-feedback-list');
+      const complaints = PN.storage.all('complaints');
+      if (complaints.length === 0) {
+        fbContainer.innerHTML = '<div class="muted text-center" style="padding:1.5rem;">No tickets or feedback submitted.</div>';
+      } else {
+        fbContainer.innerHTML = complaints.slice(0, 3).map(c => {
+          let stBadge = 'badge-yellow';
+          if (c.status === 'resolved') stBadge = 'badge-green';
+          else if (c.status === 'in-progress') stBadge = 'badge-blue';
+
+          return `
+            <div style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.75rem; background:#FAFCFE;">
+              <div class="d-flex justify-between align-center mb-1">
+                <span style="font-weight:700; font-size:0.85rem;">${PN.app.escapeHtml(c.subject)}</span>
+                <span class="badge ${stBadge}" style="font-size:0.65rem;">${c.status}</span>
+              </div>
+              <p class="muted mb-1" style="font-size:0.75rem; margin-bottom:0.25rem;">${PN.app.escapeHtml(c.message.slice(0, 90))}...</p>
+              <div style="font-size:0.7rem; color:var(--navy-muted); display:flex; justify-content:space-between;">
+                <span>By ${PN.app.escapeHtml(c.userName)} (${c.category})</span>
+                <span>${PN.app.formatDate(c.createdAt)}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    });
+  </script>
+</body>
+</html>
+

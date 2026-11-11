@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Parking – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/parking.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body data-root="">
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-square-parking"></i>
+        <span>PARK</span>NOVA
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="find-parking.html" class="active">Find Parking</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+      </div>
+      <button class="nav-toggle-btn" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Smart Recommendations Bar (Section 8.G) -->
+  <div style="background: white; border-bottom: 1px solid var(--border); padding: 0.6rem 1.5rem;">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; font-size: 0.8rem;">
+      <div class="d-flex align-center gap-1">
+        <strong style="color: var(--navy);"><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Smart Picks:</strong>
+        <span id="rec-cheapest" class="badge badge-green" style="cursor: pointer;"></span>
+        <span id="rec-nearest" class="badge badge-blue" style="cursor: pointer;"></span>
+        <span id="rec-value" class="badge badge-warning" style="cursor: pointer;"></span>
+      </div>
+      <div style="color: var(--navy-muted);">
+        <i class="fa-solid fa-circle text-success" style="font-size:0.5rem;"></i> High &nbsp;
+        <i class="fa-solid fa-circle text-warning" style="font-size:0.5rem;"></i> Limited &nbsp;
+        <i class="fa-solid fa-circle text-danger" style="font-size:0.5rem;"></i> Full
+      </div>
+    </div>
+  </div>
+
+  <!-- Map + Listing Layout -->
+  <div class="map-layout-container">
+    
+    <!-- Sidebar: Search, Filters & Cards -->
+    <aside class="map-sidebar">
+      <div class="map-search-header">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div style="position: relative; flex: 1;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--navy-muted);"></i>
+            <input type="text" id="filter-keyword" class="form-control" placeholder="Search city, facility, or street..." style="padding-left: 2.25rem;">
+          </div>
+          <button id="btn-locate-me" class="btn btn-outline" title="Use current location" style="padding: 0 0.85rem;">
+            <i class="fa-solid fa-crosshairs text-primary"></i>
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <div>
+            <select id="filter-vehicle-type" class="form-control" style="font-size: 0.8rem; padding: 0.5rem;">
+              <option value="all">Vehicle: All</option>
+              <option value="4W">Car (4W)</option>
+              <option value="2W">Bike (2W)</option>
+              <option value="EV">EV Charging</option>
+            </select>
+          </div>
+          <div>
+            <select id="filter-sort-by" class="form-control" style="font-size: 0.8rem; padding: 0.5rem;">
+              <option value="recommended">Sort: Recommended</option>
+              <option value="cheapest">Sort: Lowest Price</option>
+              <option value="nearest">Sort: Nearest</option>
+              <option value="rating">Sort: Top Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Price Range Filter -->
+        <div style="margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--navy-muted);">
+          <span>Max Rate: <strong id="price-display" class="text-primary">₹150/hr</strong></span>
+          <input type="range" id="filter-price" min="20" max="150" value="150" step="10" style="width: 140px; cursor: pointer;">
+        </div>
+      </div>
+
+      <!-- Result Count Info & Compare Trigger -->
+      <div style="padding: 0.75rem 1rem 0; font-size: 0.8rem; color: var(--navy-muted); display: flex; justify-content: space-between; align-items: center;">
+        <span id="search-count-label">Showing all verified parking spaces</span>
+        <button type="button" id="btn-open-compare" class="btn btn-outline btn-sm" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+          <i class="fa-solid fa-code-compare text-primary"></i> Compare Lots
+        </button>
+      </div>
+
+      <!-- Parking Cards List -->
+      <div class="map-results-list" id="parking-results-container">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </aside>
+
+    <!-- Map View Canvas -->
+    <div id="map-view"></div>
+
+  </div>
+
+  <!-- Smart Parking Comparison Modal (Section 8.C) -->
+  <div id="compare-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 900px; width: 95%;">
+      <div class="d-flex justify-between align-center mb-2">
+        <h3 style="margin-bottom: 0;"><i class="fa-solid fa-code-compare text-primary"></i> Smart Parking Comparison</h3>
+        <button type="button" class="btn btn-sm btn-outline" id="btn-close-compare">&times;</button>
+      </div>
+      <p class="muted" style="font-size:0.85rem; margin-bottom: 1.25rem;">Compare tariffs, proximity, live slot availability, opening hours, and amenities side-by-side.</p>
+      
+      <div class="comparison-table-wrapper" id="compare-table-target">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- PARKNOVA Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/parking.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Leaflet Map
+      PN.map.init('map-view', [10.8050, 78.6856], 13);
+
+      const params = PN.app.getQueryParams();
+      const keywordInput = document.getElementById('filter-keyword');
+      const vehicleSelect = document.getElementById('filter-vehicle-type');
+      const sortSelect = document.getElementById('filter-sort-by');
+      const priceRange = document.getElementById('filter-price');
+      const priceDisplay = document.getElementById('price-display');
+      const resultsContainer = document.getElementById('parking-results-container');
+      const countLabel = document.getElementById('search-count-label');
+      const locateBtn = document.getElementById('btn-locate-me');
+
+      let userCoordinates = null;
+
+      // Handle URL params
+      if (params.city) keywordInput.value = params.city;
+      if (params.type && ['4W', '2W', 'EV'].includes(params.type)) vehicleSelect.value = params.type;
+
+      // Update recommendations bar
+      function updateRecommendations() {
+        const recs = PN.parking.getSmartRecommendations(
+          userCoordinates ? userCoordinates.lat : null,
+          userCoordinates ? userCoordinates.lng : null
+        );
+
+        const recCheapest = document.getElementById('rec-cheapest');
+        const recNearest = document.getElementById('rec-nearest');
+        const recValue = document.getElementById('rec-value');
+
+        if (recs.cheapest) {
+          recCheapest.innerHTML = `<i class="fa-solid fa-tag"></i> Cheapest: ${recs.cheapest.name.slice(0, 18)}... (₹${recs.cheapest.hourlyRate4W}/hr)`;
+          recCheapest.onclick = () => focusOnParking(recs.cheapest.id);
+        } else recCheapest.style.display = 'none';
+
+        if (recs.nearest) {
+          recNearest.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> Nearest: ${recs.nearest.name.slice(0, 18)}... (${recs.nearest.distanceKm || '1.2'} km)`;
+          recNearest.onclick = () => focusOnParking(recs.nearest.id);
+        } else recNearest.style.display = 'none';
+
+        if (recs.bestValue) {
+          recValue.innerHTML = `<i class="fa-solid fa-star"></i> Top Rated: ${recs.bestValue.name.slice(0, 18)}...`;
+          recValue.onclick = () => focusOnParking(recs.bestValue.id);
+        } else recValue.style.display = 'none';
+      }
+
+      function focusOnParking(parkingId) {
+        PN.map.focusParking(parkingId);
+        const card = document.querySelector(`.parking-card[data-parking-id="${parkingId}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          document.querySelectorAll('.parking-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+        }
+      }
+
+      // Execute search and render
+      function performSearch() {
+        const criteria = {
+          keyword: keywordInput.value,
+          maxPrice: priceRange.value < 150 ? priceRange.value : null,
+          vehicleType: vehicleSelect.value,
+          sortBy: sortSelect.value,
+          userLat: userCoordinates ? userCoordinates.lat : null,
+          userLng: userCoordinates ? userCoordinates.lng : null
+        };
+
+        const list = PN.parking.searchParkings(criteria);
+        
+        countLabel.textContent = `Found ${list.length} parking ${list.length === 1 ? 'facility' : 'facilities'}`;
+
+        if (list.length === 0) {
+          resultsContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fa-solid fa-car-tunnel empty-state-icon"></i>
+              <h3>No Parking Found</h3>
+              <p>Try adjusting your search keyword, increasing the price range, or clearing filters.</p>
+            </div>
+          `;
+          PN.map.clearMarkers();
+          return;
+        }
+
+        resultsContainer.innerHTML = list.map(p => PN.parking.createParkingCardHtml(p)).join('');
+
+        // Map markers
+        PN.map.renderParkingMarkers(list, (clickedParking) => {
+          focusOnParking(clickedParking.id);
+        });
+
+        // Add click events to cards
+        resultsContainer.querySelectorAll('.parking-card').forEach(card => {
+          card.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' || e.target.closest('a')) return;
+            const pid = card.dataset.parkingId;
+            focusOnParking(pid);
+          });
+        });
+      }
+
+      // Event Listeners
+      keywordInput.addEventListener('input', performSearch);
+      vehicleSelect.addEventListener('change', performSearch);
+      sortSelect.addEventListener('change', performSearch);
+
+      priceRange.addEventListener('input', () => {
+        priceDisplay.textContent = priceRange.value >= 150 ? 'Any Rate' : `₹${priceRange.value}/hr`;
+        performSearch();
+      });
+
+      locateBtn.addEventListener('click', () => {
+        PN.map.locateUser((lat, lng) => {
+          userCoordinates = { lat, lng };
+          updateRecommendations();
+          performSearch();
+        });
+      });
+
+      // Initial run
+      updateRecommendations();
+      performSearch();
+
+      // Comparison Modal Logic
+      const compareBtn = document.getElementById('btn-open-compare');
+      const compareModal = document.getElementById('compare-modal');
+      const closeCompareBtn = document.getElementById('btn-close-compare');
+      const compareTableTarget = document.getElementById('compare-table-target');
+
+      if (compareBtn && compareModal) {
+        compareBtn.addEventListener('click', () => {
+          const list = PN.parking.searchParkings({
+            userLat: userCoordinates ? userCoordinates.lat : null,
+            userLng: userCoordinates ? userCoordinates.lng : null
+          });
+
+          if (list.length === 0) {
+            PN.toast('No approved parking facilities available to compare.', 'warning');
+            return;
+          }
+
+          const topToCompare = list.slice(0, 4);
+          compareTableTarget.innerHTML = `
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th style="min-width: 150px;">Comparison Metrics</th>
+                  ${topToCompare.map(p => `
+                    <th style="min-width: 170px;">
+                      <div style="font-weight: 800; color: var(--navy); font-size: 0.95rem;">${PN.app.escapeHtml(p.name)}</div>
+                      <div class="muted" style="font-size: 0.75rem;"><i class="fa-solid fa-location-dot"></i> ${p.city}</div>
+                    </th>
+                  `).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Car Hourly (4W)</strong></td>
+                  ${topToCompare.map(p => `<td><strong class="text-primary" style="font-size:1.1rem;">₹${p.hourlyRate4W}</strong> / hr</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Bike Hourly (2W)</strong></td>
+                  ${topToCompare.map(p => `<td>₹${p.hourlyRate2W || 15} / hr</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Full Day Pass (4W)</strong></td>
+                  ${topToCompare.map(p => `<td>₹${p.dailyRate4W || (p.hourlyRate4W * 6)} / day</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Proximity Distance</strong></td>
+                  ${topToCompare.map(p => `<td><span class="badge badge-neutral"><i class="fa-solid fa-route"></i> ${p.distanceKm || '1.2'} km away</span></td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Live Available Slots</strong></td>
+                  ${topToCompare.map(p => {
+                    const a = p.availability;
+                    return `<td><span class="heatmap-indicator heatmap-${a.level}"><span class="heatmap-dot"></span> ${a.available}/${a.total} (${a.label})</span></td>`;
+                  }).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Operating Hours</strong></td>
+                  ${topToCompare.map(p => `<td><i class="fa-solid fa-clock"></i> ${p.openTime} - ${p.closeTime}</td>`).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Amenities & Security</strong></td>
+                  ${topToCompare.map(p => `
+                    <td>
+                      <div style="font-size:0.75rem; display:flex; flex-direction:column; gap:3px;">
+                        ${(p.amenities || ['CCTV', 'Security']).map(am => `<span><i class="fa-solid fa-check text-primary"></i> ${PN.app.escapeHtml(am)}</span>`).join('')}
+                      </div>
+                    </td>
+                  `).join('')}
+                </tr>
+                <tr>
+                  <td><strong>Action</strong></td>
+                  ${topToCompare.map(p => `
+                    <td>
+                      <a href="driver/select-slot.html?parkingId=${p.id}" class="btn btn-primary btn-sm btn-block">
+                        Select Bay
+                      </a>
+                    </td>
+                  `).join('')}
+                </tr>
+              </tbody>
+            </table>
+          `;
+
+          compareModal.classList.add('active');
+        });
+
+        closeCompareBtn.addEventListener('click', () => {
+          compareModal.classList.remove('active');
+        });
+
+        compareModal.addEventListener('click', (e) => {
+          if (e.target === compareModal) compareModal.classList.remove('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

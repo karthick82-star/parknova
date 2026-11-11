@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Floors & Parking Slots – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge" style="background:#2563EB;">OW</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Owner</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-building-user text-info"></i> Parking Partner</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="manage-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-square-parking"></i> My Facilities
+        </a>
+        <a href="add-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-plus-circle"></i> Add Facility
+        </a>
+        <a href="manage-slots.html" class="sidebar-link active">
+          <i class="fa-solid fa-layer-group"></i> Manage Slots & Bays
+        </a>
+        <a href="bookings.html" class="sidebar-link">
+          <i class="fa-solid fa-calendar-check"></i> Bookings & Gate
+        </a>
+        <a href="reports.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-line"></i> Revenue & Reports
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Owner Portal / <span>Bays & Floor Matrix</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Header & Facility Selector -->
+        <div class="page-header">
+          <div>
+            <h1>Bay & Multi-Floor Management</h1>
+            <p class="muted">Add levels, configure new slots, or mark bays under maintenance in real-time.</p>
+          </div>
+
+          <div style="min-width: 280px;">
+            <label class="form-label" for="select-facility">Active Parking Location</label>
+            <select id="select-facility" class="form-control">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+          
+          <!-- Visual Floor Plan & Slot Toggles -->
+          <div class="slot-selection-panel">
+            <div class="d-flex justify-between align-center mb-2">
+              <h3>Live Slot Control Matrix</h3>
+              <div class="d-flex gap-1">
+                <button type="button" class="btn btn-outline btn-sm" id="btn-show-add-floor">
+                  <i class="fa-solid fa-plus"></i> Add Floor
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn-show-add-slot">
+                  <i class="fa-solid fa-plus"></i> Add Slot
+                </button>
+              </div>
+            </div>
+
+            <!-- Floor tabs & Grid Container -->
+            <div id="owner-slot-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Slot Details & State Override Card -->
+          <div>
+            <div class="card" style="position: sticky; top: 90px; border-top: 4px solid var(--info); box-shadow: var(--shadow-md);">
+              <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">Slot Inspector</h3>
+              
+              <div id="inspector-placeholder" class="empty-state" style="padding: 1.5rem 0.5rem;">
+                <i class="fa-solid fa-hand-pointer empty-state-icon" style="font-size: 2rem;"></i>
+                <h4 style="font-size: 0.95rem;">Select a Slot</h4>
+                <p style="font-size: 0.8rem; margin-bottom: 0;">Click any bay on the floor matrix to toggle its operational state or view reservation status.</p>
+              </div>
+
+              <div id="inspector-active-slot" class="hidden">
+                <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:var(--radius-sm); padding:1rem; text-align:center; margin-bottom:1.25rem;">
+                  <div style="font-size:0.75rem; color:var(--navy-muted); font-weight:700;">INSPECTING SLOT</div>
+                  <div id="inspect-slot-num" style="font-size:2rem; font-weight:800; color:var(--navy); line-height:1.2;">--</div>
+                  <span id="inspect-slot-type" class="badge badge-blue">4W</span>
+                  <div id="inspect-slot-floor" class="muted" style="font-size:0.8rem; margin-top:4px;">Floor 1</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="inspect-slot-status">Operational Status Override</label>
+                  <select id="inspect-slot-status" class="form-control">
+                    <option value="available">Available (Open for booking)</option>
+                    <option value="occupied">Occupied (Vehicle Parked)</option>
+                    <option value="maintenance">Maintenance (Blocked from booking)</option>
+                  </select>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-block mb-2" id="btn-apply-slot-status">
+                  <i class="fa-solid fa-check"></i> Apply Status Update
+                </button>
+
+                <div class="sim-label text-center">
+                  Changes immediately update public search & driver booking availability.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Add Floor Modal -->
+  <div id="add-floor-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3>Add New Parking Floor</h3>
+      <p class="muted" style="font-size:0.8rem;">Add a multi-level deck or basement tier to this facility.</p>
+      <form id="add-floor-form">
+        <div class="form-group">
+          <label class="form-label" for="new-floor-name">Floor Name / Label <span class="required">*</span></label>
+          <input type="text" id="new-floor-name" class="form-control" placeholder="e.g. Level 2 (Rooftop Deck)" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="btn-close-floor-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Floor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Slot Modal -->
+  <div id="add-slot-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3>Add Parking Bay</h3>
+      <p class="muted" style="font-size:0.8rem;">Add a single parking slot to the currently selected floor.</p>
+      <form id="add-slot-form">
+        <div class="form-group">
+          <label class="form-label" for="new-slot-num">Slot Number / Code <span class="required">*</span></label>
+          <input type="text" id="new-slot-num" class="form-control" placeholder="e.g. A5 or EV2" style="text-transform: uppercase;" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="new-slot-vtype">Vehicle Category</label>
+          <select id="new-slot-vtype" class="form-control">
+            <option value="4W">Car (4W)</option>
+            <option value="2W">Bike (2W)</option>
+            <option value="EV">Electric Vehicle (EV Charging)</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="btn-close-slot-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Slot</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/slots.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('owner');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.businessName || user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      // Facilities strictly belonging to this owner
+      const myParkings = PN.storage.where('parkings', p => p.ownerId === user.id);
+      const facSelect = document.getElementById('select-facility');
+      const container = document.getElementById('owner-slot-container');
+
+      if (myParkings.length === 0) {
+        facSelect.innerHTML = '<option value="">No facilities registered</option>';
+        container.innerHTML = '<div class="empty-state"><h3>No Facilities Registered</h3><p>Register a parking facility first.</p><a href="add-parking.html" class="btn btn-primary">Add Facility</a></div>';
+        return;
+      }
+
+      facSelect.innerHTML = myParkings.map(p => `
+        <option value="${p.id}">${p.name} (${p.city})</option>
+      `).join('');
+
+      const params = PN.app.getQueryParams();
+      if (params.parkingId && myParkings.some(p => p.id === params.parkingId)) {
+        facSelect.value = params.parkingId;
+      }
+
+      let activeSlot = null;
+      const placeholder = document.getElementById('inspector-placeholder');
+      const activeInspector = document.getElementById('inspector-active-slot');
+      const inspectNum = document.getElementById('inspect-slot-num');
+      const inspectType = document.getElementById('inspect-slot-type');
+      const inspectFloor = document.getElementById('inspect-slot-floor');
+      const inspectStatus = document.getElementById('inspect-slot-status');
+      const applyBtn = document.getElementById('btn-apply-slot-status');
+
+      function loadSlotsForActiveFacility() {
+        const pid = facSelect.value;
+        if (!pid) return;
+
+        PN.slots.initPicker(container, pid, (slot) => {
+          activeSlot = slot;
+          placeholder.classList.add('hidden');
+          activeInspector.classList.remove('hidden');
+
+          inspectNum.textContent = slot.slotNumber;
+          inspectType.textContent = slot.vehicleType;
+          inspectFloor.textContent = slot.floorName;
+          inspectStatus.value = slot.baseStatus || slot.liveStatus || 'available';
+        });
+      }
+
+      facSelect.addEventListener('change', () => {
+        placeholder.classList.remove('hidden');
+        activeInspector.classList.add('hidden');
+        activeSlot = null;
+        loadSlotsForActiveFacility();
+      });
+
+      // Apply Status Button
+      applyBtn.addEventListener('click', () => {
+        if (!activeSlot) return;
+        const newStat = inspectStatus.value;
+        PN.slots.updateSlotStatus(activeSlot.id, newStat);
+        PN.toast(`Slot ${activeSlot.slotNumber} updated to '${newStat}'.`, 'success');
+        loadSlotsForActiveFacility();
+      });
+
+      // Add Floor Modal
+      const floorModal = document.getElementById('add-floor-modal');
+      const showFloorBtn = document.getElementById('btn-show-add-floor');
+      const closeFloorBtn = document.getElementById('btn-close-floor-modal');
+      const floorForm = document.getElementById('add-floor-form');
+
+      showFloorBtn.addEventListener('click', () => floorModal.classList.add('active'));
+      closeFloorBtn.addEventListener('click', () => floorModal.classList.remove('active'));
+
+      floorForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fname = document.getElementById('new-floor-name').value.trim();
+        if (!fname) return;
+
+        PN.slots.addFloor(facSelect.value, fname);
+        floorModal.classList.remove('active');
+        floorForm.reset();
+        PN.toast(`New floor "${fname}" created!`, 'success');
+        loadSlotsForActiveFacility();
+      });
+
+      // Add Slot Modal
+      const slotModal = document.getElementById('add-slot-modal');
+      const showSlotBtn = document.getElementById('btn-show-add-slot');
+      const closeSlotBtn = document.getElementById('btn-close-slot-modal');
+      const slotForm = document.getElementById('add-slot-form');
+
+      showSlotBtn.addEventListener('click', () => slotModal.classList.add('active'));
+      closeSlotBtn.addEventListener('click', () => slotModal.classList.remove('active'));
+
+      slotForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const snum = document.getElementById('new-slot-num').value.trim().toUpperCase();
+        const stype = document.getElementById('new-slot-vtype').value;
+
+        const currentFloorId = PN.slots.currentFloorId;
+        if (!currentFloorId) {
+          PN.toast('Please select a floor first.', 'error');
+          return;
+        }
+
+        const res = PN.slots.addSlot(facSelect.value, currentFloorId, snum, stype);
+        if (!res.success) {
+          PN.toast(res.message, 'error');
+          return;
+        }
+
+        slotModal.classList.remove('active');
+        slotForm.reset();
+        PN.toast(`Slot "${snum}" added to active floor!`, 'success');
+        loadSlotsForActiveFacility();
+      });
+
+      loadSlotsForActiveFacility();
+    });
+  </script>
+</body>
+</html>
+

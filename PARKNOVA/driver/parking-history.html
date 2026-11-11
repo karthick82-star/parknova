@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking History – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge"><i class="fa-solid fa-user"></i></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Driver</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-car text-primary"></i> Driver Account</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="../find-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-map-location-dot"></i> Find & Book
+        </a>
+        <a href="my-bookings.html" class="sidebar-link">
+          <i class="fa-solid fa-ticket"></i> My Bookings
+        </a>
+        <a href="parking-history.html" class="sidebar-link active">
+          <i class="fa-solid fa-clock-rotate-left"></i> Parking History
+        </a>
+        <a href="profile.html" class="sidebar-link">
+          <i class="fa-solid fa-user-gear"></i> My Vehicles & Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Driver Portal / <span>Parking History & Receipts</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="page-header">
+          <div>
+            <h1>Completed Parking History</h1>
+            <p class="muted">Review your verified past parking sessions and simulated automated gate timestamp records.</p>
+          </div>
+        </div>
+
+        <!-- History Summary Metrics -->
+        <div class="stats-grid mb-3">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Completed Sessions</div>
+              <div class="stat-value" id="hist-stat-count">0</div>
+            </div>
+          </div>
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Hours Parked</div>
+              <div class="stat-value" id="hist-stat-hours">0 hrs</div>
+            </div>
+          </div>
+          <div class="stat-card stat-navy">
+            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Spent</div>
+              <div class="stat-value" id="hist-stat-spent">₹0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Facility & Bay</th>
+                  <th>Vehicle</th>
+                  <th>Simulated Entry Time</th>
+                  <th>Simulated Exit Time</th>
+                  <th>Duration</th>
+                  <th>Total Fee</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody">
+                <!-- Rendered by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('driver');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      const tbody = document.getElementById('history-tbody');
+      const allBookings = PN.storage.where('bookings', b => b.userId === user.id);
+      
+      // Completed or past records
+      const completedList = allBookings.filter(b => b.status === 'completed');
+
+      // Update metrics
+      document.getElementById('hist-stat-count').textContent = completedList.length;
+      const totalHrs = completedList.reduce((sum, b) => sum + (Number(b.durationHours) || 0), 0);
+      document.getElementById('hist-stat-hours').textContent = `${totalHrs} hrs`;
+      const totalAmount = completedList.reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+      document.getElementById('hist-stat-spent').textContent = PN.app.formatCurrency(totalAmount);
+
+      if (completedList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center" style="padding: 3rem 1rem;">
+              <div class="empty-state" style="padding: 1rem;">
+                <i class="fa-solid fa-history empty-state-icon" style="font-size: 2.5rem;"></i>
+                <h3>No Completed Parking Sessions</h3>
+                <p>When you finish a parking session, its entry/exit logs will be archived here.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = completedList.map(b => {
+        const entryTime = b.entryTime || b.startTime;
+        const exitTime = b.exitTime || b.endTime;
+
+        return `
+          <tr>
+            <td>
+              <a href="confirmation.html?id=${b.id}" style="font-family:var(--font-mono); font-weight:700;">
+                ${b.id}
+              </a>
+            </td>
+            <td>
+              <div style="font-weight:700;">${PN.app.escapeHtml(b.parkingName)}</div>
+              <div class="muted" style="font-size:0.75rem;">Slot ${b.slotNumber} (${b.floorName})</div>
+            </td>
+            <td>
+              <div>${b.vehiclePlate}</div>
+              <div class="muted" style="font-size:0.75rem;">${b.vehicleType}</div>
+            </td>
+            <td>
+              <div style="font-size:0.8rem; font-weight:600;">${PN.app.formatDateTime(entryTime)}</div>
+              <span class="sim-label"><i class="fa-solid fa-barcode"></i> Barrier Scan IN</span>
+            </td>
+            <td>
+              <div style="font-size:0.8rem; font-weight:600;">${PN.app.formatDateTime(exitTime)}</div>
+              <span class="sim-label"><i class="fa-solid fa-barcode"></i> Barrier Scan OUT</span>
+            </td>
+            <td style="font-weight:600;">${b.durationHours} hrs</td>
+            <td style="font-weight:800; color:var(--primary);">${PN.app.formatCurrency(b.totalAmount)}</td>
+            <td><span class="badge badge-green"><i class="fa-solid fa-check"></i> Completed</span></td>
+          </tr>
+        `;
+      }).join('');
+    });
+  </script>
+</body>
+</html>
+

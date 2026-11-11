@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Parking Facility – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge" style="background:#2563EB;">OW</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">Owner</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-building-user text-info"></i> Parking Partner</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="manage-parking.html" class="sidebar-link">
+          <i class="fa-solid fa-square-parking"></i> My Facilities
+        </a>
+        <a href="add-parking.html" class="sidebar-link active">
+          <i class="fa-solid fa-plus-circle"></i> Add Facility
+        </a>
+        <a href="manage-slots.html" class="sidebar-link">
+          <i class="fa-solid fa-layer-group"></i> Manage Slots & Bays
+        </a>
+        <a href="bookings.html" class="sidebar-link">
+          <i class="fa-solid fa-calendar-check"></i> Bookings & Gate
+        </a>
+        <a href="reports.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-line"></i> Revenue & Reports
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            Owner Portal / <a href="manage-parking.html">My Facilities</a> / <span>List New Facility</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="page-header">
+          <div>
+            <h1>List a New Parking Facility</h1>
+            <p class="muted">Fill in your facility specs. New parking locations remain pending until approved by the platform administrator.</p>
+          </div>
+        </div>
+
+        <form id="add-parking-form" novalidate style="max-width: 860px;">
+          
+          <!-- Basic Details Card -->
+          <div class="card mb-3">
+            <h3 style="font-size: 1.15rem; margin-bottom: 1rem;"><i class="fa-solid fa-circle-info text-primary"></i> Basic Information</h3>
+            
+            <div class="form-group">
+              <label class="form-label" for="p-name">Facility Name <span class="required">*</span></label>
+              <input type="text" id="p-name" class="form-control" placeholder="e.g. Metro Grand Smart Parking" required>
+              <div class="field-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="p-desc">Description</label>
+              <textarea id="p-desc" rows="3" class="form-control" placeholder="Describe your facility, security, boom barrier setup..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="flex: 2;">
+                <label class="form-label" for="p-address">Street Address <span class="required">*</span></label>
+                <input type="text" id="p-address" class="form-control" placeholder="e.g. 24 Cantonment Main Road" required>
+                <div class="field-error"></div>
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label" for="p-city">City <span class="required">*</span></label>
+                <input type="text" id="p-city" class="form-control" placeholder="e.g. Tiruchirappalli" required>
+                <div class="field-error"></div>
+              </div>
+            </div>
+
+            <!-- Coordinates with Quick Fill Helpers -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="p-lat">Latitude <span class="required">*</span></label>
+                <input type="number" step="any" id="p-lat" class="form-control" placeholder="10.8050" required>
+                <div class="field-error"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="p-lng">Longitude <span class="required">*</span></label>
+                <input type="number" step="any" id="p-lng" class="form-control" placeholder="78.6856" required>
+                <div class="field-error"></div>
+              </div>
+            </div>
+
+            <!-- City Coordinate Quick Fill Buttons -->
+            <div class="d-flex align-center gap-1 flex-wrap" style="font-size: 0.75rem; color: var(--navy-muted);">
+              <span>Quick Preset Coordinates:</span>
+              <button type="button" class="btn btn-outline btn-sm coord-preset" data-lat="10.8050" data-lng="78.6856" data-city="Tiruchirappalli">Trichy</button>
+              <button type="button" class="btn btn-outline btn-sm coord-preset" data-lat="13.0827" data-lng="80.2707" data-city="Chennai">Chennai</button>
+              <button type="button" class="btn btn-outline btn-sm coord-preset" data-lat="12.9716" data-lng="77.5946" data-city="Bengaluru">Bengaluru</button>
+              <button type="button" class="btn btn-outline btn-sm coord-preset" data-lat="19.0760" data-lng="72.8777" data-city="Mumbai">Mumbai</button>
+              <button type="button" class="btn btn-outline btn-sm coord-preset" data-lat="28.6139" data-lng="77.2090" data-city="Delhi">Delhi</button>
+            </div>
+          </div>
+
+          <!-- Image & Timings Card -->
+          <div class="card mb-3">
+            <h3 style="font-size: 1.15rem; margin-bottom: 1rem;"><i class="fa-solid fa-clock text-info"></i> Media & Operating Hours</h3>
+            
+            <div class="form-group">
+              <label class="form-label" for="p-image">Primary Photo Image URL</label>
+              <input type="url" id="p-image" class="form-control" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80">
+              <div style="font-size: 0.75rem; color: var(--navy-muted); margin-top: 4px;">
+                You can paste any public image link or leave default high-res parking image.
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="p-open">Opening Time</label>
+                <input type="time" id="p-open" class="form-control" value="06:00" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="p-close">Closing Time</label>
+                <input type="time" id="p-close" class="form-control" value="23:30" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Supported Vehicle Categories</label>
+              <div class="d-flex gap-2 flex-wrap">
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                  <input type="checkbox" name="vTypes" value="4W" checked> <span>Cars (4W)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                  <input type="checkbox" name="vTypes" value="2W" checked> <span>Bikes (2W)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                  <input type="checkbox" name="vTypes" value="EV" checked> <span>EV Charging Bays</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pricing Tariffs Card -->
+          <div class="card mb-3">
+            <h3 style="font-size: 1.15rem; margin-bottom: 1rem;"><i class="fa-solid fa-indian-rupee-sign text-success"></i> Pricing Tariffs (INR ₹)</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="p-rate-4w">Car (4W) Hourly Rate (₹) <span class="required">*</span></label>
+                <input type="number" id="p-rate-4w" class="form-control" value="40" min="5" required>
+                <div class="field-error"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="p-daily-4w">Car (4W) Daily Rate (₹) <span class="required">*</span></label>
+                <input type="number" id="p-daily-4w" class="form-control" value="240" min="20" required>
+                <div class="field-error"></div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="p-rate-2w">Bike (2W) Hourly Rate (₹) <span class="required">*</span></label>
+                <input type="number" id="p-rate-2w" class="form-control" value="15" min="2" required>
+                <div class="field-error"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="p-daily-2w">Bike (2W) Daily Rate (₹) <span class="required">*</span></label>
+                <input type="number" id="p-daily-2w" class="form-control" value="90" min="10" required>
+                <div class="field-error"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Amenities & Initial Floor Layout Setup -->
+          <div class="card mb-4">
+            <h3 style="font-size: 1.15rem; margin-bottom: 1rem;"><i class="fa-solid fa-layer-group text-primary"></i> Initial Layout & Amenities</h3>
+
+            <div class="form-group">
+              <label class="form-label">Available Amenities</label>
+              <div class="d-flex gap-2 flex-wrap">
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"><input type="checkbox" name="amenity" value="CCTV Surveillance" checked> CCTV</label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"><input type="checkbox" name="amenity" value="24/7 Security" checked> Security Guard</label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"><input type="checkbox" name="amenity" value="EV Charging" checked> EV Charging</label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"><input type="checkbox" name="amenity" value="Covered Parking" checked> Covered Bays</label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"><input type="checkbox" name="amenity" value="Restrooms"> Restrooms</label>
+                <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"><input type="checkbox" name="amenity" value="Valet Available"> Valet Parking</label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="p-num-floors">Initial Floors</label>
+                <select id="p-num-floors" class="form-control">
+                  <option value="1" selected>1 Floor (Ground Level)</option>
+                  <option value="2">2 Floors (G + Level 1)</option>
+                  <option value="3">3 Floors (Multi-Tier)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="p-slots-per-floor">Slots Per Floor</label>
+                <select id="p-slots-per-floor" class="form-control">
+                  <option value="8">8 Slots per floor</option>
+                  <option value="12" selected>12 Slots per floor</option>
+                  <option value="16">16 Slots per floor</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="alert alert-warning" style="margin-bottom:0;">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <div><strong>Admin Approval Notice:</strong> Submitted facilities are marked as <strong>PENDING</strong> and must be approved by the platform Admin before appearing on public searches.</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="btn-submit-parking">
+            <i class="fa-solid fa-paper-plane"></i> Submit Facility for Admin Review
+          </button>
+        </form>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('owner');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.businessName || user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || user.name[0];
+
+      // Coordinate preset pill buttons
+      document.querySelectorAll('.coord-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('p-lat').value = btn.dataset.lat;
+          document.getElementById('p-lng').value = btn.dataset.lng;
+          document.getElementById('p-city').value = btn.dataset.city;
+          PN.toast(`Coordinates set for ${btn.dataset.city}`, 'info');
+        });
+      });
+
+      const form = document.getElementById('add-parking-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        PN.validate.clearErrors(form);
+
+        const nameEl = document.getElementById('p-name');
+        const addrEl = document.getElementById('p-address');
+        const cityEl = document.getElementById('p-city');
+        const latEl = document.getElementById('p-lat');
+        const lngEl = document.getElementById('p-lng');
+        const rate4wEl = document.getElementById('p-rate-4w');
+        const daily4wEl = document.getElementById('p-daily-4w');
+        const rate2wEl = document.getElementById('p-rate-2w');
+        const daily2wEl = document.getElementById('p-daily-2w');
+
+        // Validation
+        const nameErr = PN.validate.required(nameEl.value, 'Facility name');
+        const addrErr = PN.validate.required(addrEl.value, 'Address');
+        const cityErr = PN.validate.required(cityEl.value, 'City');
+        const latErr = PN.validate.required(latEl.value, 'Latitude');
+        const lngErr = PN.validate.required(lngEl.value, 'Longitude');
+        const r4wErr = PN.validate.number(rate4wEl.value, 1, 'Car hourly rate');
+        const d4wErr = PN.validate.number(daily4wEl.value, 1, 'Car daily rate');
+
+        let isValid = true;
+        if (nameErr) { PN.validate.showFieldError(nameEl, nameErr); isValid = false; }
+        if (addrErr) { PN.validate.showFieldError(addrEl, addrErr); isValid = false; }
+        if (cityErr) { PN.validate.showFieldError(cityEl, cityErr); isValid = false; }
+        if (latErr) { PN.validate.showFieldError(latEl, latErr); isValid = false; }
+        if (lngErr) { PN.validate.showFieldError(lngEl, lngErr); isValid = false; }
+        if (r4wErr) { PN.validate.showFieldError(rate4wEl, r4wErr); isValid = false; }
+        if (d4wErr) { PN.validate.showFieldError(daily4wEl, d4wErr); isValid = false; }
+
+        if (!isValid) return;
+
+        // Vehicle types checked
+        const vTypes = Array.from(document.querySelectorAll('input[name="vTypes"]:checked')).map(cb => cb.value);
+        if (vTypes.length === 0) vTypes.push('4W');
+
+        // Amenities checked
+        const amenities = Array.from(document.querySelectorAll('input[name="amenity"]:checked')).map(cb => cb.value);
+
+        const parkingId = 'p_' + Date.now().toString(36);
+        const newParking = {
+          id: parkingId,
+          ownerId: user.id,
+          name: nameEl.value.trim(),
+          description: document.getElementById('p-desc').value.trim() || 'Modern smart parking facility.',
+          address: addrEl.value.trim(),
+          city: cityEl.value.trim(),
+          lat: parseFloat(latEl.value),
+          lng: parseFloat(lngEl.value),
+          images: [document.getElementById('p-image').value.trim()],
+          openTime: document.getElementById('p-open').value,
+          closeTime: document.getElementById('p-close').value,
+          vehicleTypes: vTypes,
+          hourlyRate4W: parseFloat(rate4wEl.value),
+          dailyRate4W: parseFloat(daily4wEl.value),
+          hourlyRate2W: parseFloat(rate2wEl.value) || 15,
+          dailyRate2W: parseFloat(daily2wEl.value) || 90,
+          amenities: amenities,
+          status: 'pending', // Pending Admin review!
+          active: false,
+          rating: 5.0,
+          totalReviews: 1,
+          createdAt: new Date().toISOString()
+        };
+
+        PN.storage.insert('parkings', newParking);
+
+        // Generate Floors & Slots
+        const numFloors = parseInt(document.getElementById('p-num-floors').value) || 1;
+        const slotsPerFloor = parseInt(document.getElementById('p-slots-per-floor').value) || 12;
+
+        for (let f = 1; f <= numFloors; f++) {
+          const floorId = `floor_${parkingId}_${f}`;
+          PN.storage.insert('floors', {
+            id: floorId,
+            parkingId: parkingId,
+            name: f === 1 ? 'Ground Level (G)' : `Level ${f}`,
+            levelNumber: f
+          });
+
+          // Create slots (Half 4W, 2 EV, remaining 2W)
+          for (let s = 1; s <= slotsPerFloor; s++) {
+            let vType = '4W';
+            let rowLetter = 'A';
+            if (s > slotsPerFloor * 0.75) {
+              vType = '2W';
+              rowLetter = 'C';
+            } else if (s > slotsPerFloor * 0.5) {
+              vType = 'EV';
+              rowLetter = 'B';
+            }
+
+            PN.storage.insert('slots', {
+              id: `slot_${floorId}_${rowLetter}${s}`,
+              parkingId: parkingId,
+              floorId: floorId,
+              slotNumber: `${rowLetter}${s}`,
+              row: rowLetter,
+              column: s,
+              vehicleType: vType,
+              baseStatus: 'available'
+            });
+          }
+        }
+
+        PN.toast('Parking facility submitted for Admin approval!', 'success');
+        setTimeout(() => {
+          window.location.href = 'manage-parking.html';
+        }, 700);
+      });
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking Owner Management – PARKNOVA Admin</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/parking.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-root="../">
+
+  <div class="dashboard-app">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html" class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </a>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="user-avatar-badge" style="background:#7C3AED;">PA</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-display-name">SuperAdmin</div>
+          <div class="sidebar-user-role"><i class="fa-solid fa-shield-halved text-warning"></i> Platform Admin</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i> Platform Overview
+        </a>
+        <a href="parking-management.html" class="sidebar-link">
+          <i class="fa-solid fa-square-parking"></i> Parking Facilities
+        </a>
+        <a href="drivers.html" class="sidebar-link">
+          <i class="fa-solid fa-users"></i> Driver Accounts
+        </a>
+        <a href="owners.html" class="sidebar-link active">
+          <i class="fa-solid fa-building-user"></i> Parking Owners
+        </a>
+        <a href="booking-management.html" class="sidebar-link">
+          <i class="fa-solid fa-ticket"></i> Master Bookings
+        </a>
+        <a href="reports.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-pie"></i> Analytics & Exports
+        </a>
+        <a href="feedback.html" class="sidebar-link">
+          <i class="fa-solid fa-comments"></i> Complaints & Feedback
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="dashboard-breadcrumb">
+            SuperAdmin / <span>Commercial Parking Owners</span>
+          </div>
+        </div>
+        <div class="dashboard-topbar-actions">
+          <span class="badge badge-neutral" id="owner-count-pill">0 Owners Registered</span>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="page-header">
+          <div>
+            <h1>Registered Parking Facility Owners</h1>
+            <p class="muted">Audit commercial parking operators, their registered lots, and platform access standing.</p>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-group">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="search-owners" class="form-control" placeholder="Search owner by name, email, or business...">
+            </div>
+          </div>
+          <div class="filter-group">
+            <button type="button" class="btn btn-sm btn-primary filter-obtn active" data-status="all">All</button>
+            <button type="button" class="btn btn-sm btn-outline filter-obtn" data-status="active">Active</button>
+            <button type="button" class="btn btn-sm btn-outline filter-obtn" data-status="deactivated">Deactivated</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Partner Name</th>
+                  <th>Business / Operator Name</th>
+                  <th>Contact Email</th>
+                  <th>Phone Number</th>
+                  <th>Registered Lots</th>
+                  <th>Platform Status</th>
+                  <th style="text-align: right;">Access Control</th>
+                </tr>
+              </thead>
+              <tbody id="owners-tbody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/navigation.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = PN.auth.requireAuth('admin');
+      if (!user) return;
+
+      document.getElementById('user-display-name').textContent = user.name;
+      document.getElementById('user-avatar-badge').textContent = user.avatar || 'AD';
+
+      let currentStatus = 'all';
+      const searchInput = document.getElementById('search-owners');
+      const tbody = document.getElementById('owners-tbody');
+      const countPill = document.getElementById('owner-count-pill');
+      const filterBtns = document.querySelectorAll('.filter-obtn');
+
+      function renderOwners() {
+        const query = searchInput.value.trim().toLowerCase();
+        let owners = PN.storage.where('users', u => u.role === 'owner');
+        countPill.textContent = `${owners.length} Owners Registered`;
+
+        if (currentStatus !== 'all') {
+          owners = owners.filter(o => o.status === currentStatus);
+        }
+
+        if (query) {
+          owners = owners.filter(o => 
+            o.name.toLowerCase().includes(query) ||
+            o.email.toLowerCase().includes(query) ||
+            (o.businessName && o.businessName.toLowerCase().includes(query)) ||
+            (o.phone && o.phone.includes(query))
+          );
+        }
+
+        if (owners.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center muted" style="padding:2.5rem;">No owners found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = owners.map(o => {
+          const facs = PN.storage.where('parkings', p => p.ownerId === o.id);
+          const isActive = o.status === 'active';
+
+          return `
+            <tr>
+              <td>
+                <div class="d-flex align-center gap-1">
+                  <div style="width:34px; height:34px; border-radius:50%; background:#EFF6FF; color:#2563EB; display:grid; place-items:center; font-weight:700; font-size:0.8rem;">
+                    ${o.avatar || o.name[0]}
+                  </div>
+                  <div>
+                    <div style="font-weight:700;">${PN.app.escapeHtml(o.name)}</div>
+                    <div class="muted" style="font-size:0.75rem;">ID: ${o.id}</div>
+                  </div>
+                </div>
+              </td>
+              <td style="font-weight:600;">${PN.app.escapeHtml(o.businessName || 'Independent Lot Operator')}</td>
+              <td>${PN.app.escapeHtml(o.email)}</td>
+              <td>${o.phone || '--'}</td>
+              <td>
+                <a href="parking-management.html?ownerId=${o.id}" class="badge badge-blue">
+                  ${facs.length} Facilities (${facs.filter(p => p.status === 'approved').length} Active)
+                </a>
+              </td>
+              <td>
+                <span class="badge ${isActive ? 'badge-green' : 'badge-red'}">
+                  ${isActive ? 'Active' : 'Deactivated'}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <button type="button" class="btn btn-sm ${isActive ? 'btn-danger' : 'btn-outline'} btn-toggle-owner" data-id="${o.id}" data-action="${isActive ? 'deactivate' : 'activate'}">
+                  ${isActive ? '<i class="fa-solid fa-ban"></i> Deactivate' : '<i class="fa-solid fa-check"></i> Activate'}
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Attach Toggle buttons
+        tbody.querySelectorAll('.btn-toggle-owner').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const oId = btn.dataset.id;
+            const action = btn.dataset.action;
+            const target = PN.storage.find('users', oId);
+
+            const ok = await PN.confirm(`${action === 'deactivate' ? 'Deactivate' : 'Activate'} Partner Account?`,
+              `Are you sure you want to ${action} account for ${target.name}?`
+            );
+
+            if (ok) {
+              const newStatus = action === 'deactivate' ? 'deactivated' : 'active';
+              PN.storage.update('users', oId, { status: newStatus });
+              PN.toast(`Partner account ${target.name} has been ${newStatus}.`, 'info');
+              renderOwners();
+            }
+          });
+        });
+      }
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('btn-primary', 'active');
+            b.classList.add('btn-outline');
+          });
+          btn.classList.remove('btn-outline');
+          btn.classList.add('btn-primary', 'active');
+          currentStatus = btn.dataset.status;
+          renderOwners();
+        });
+      });
+
+      searchInput.addEventListener('input', renderOwners);
+
+      renderOwners();
+    });
+  </script>
+</body>
+</html>
+

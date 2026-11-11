@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In – PARKNOVA</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body data-root="">
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-square-parking"></i>
+        <span>PARK</span>NOVA
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="find-parking.html">Find Parking</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="register.html" class="btn btn-outline btn-sm">Create Account</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Auth Content Wrapper -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="brand-logo">
+          <i class="fa-solid fa-square-parking"></i>
+          <span>PARK</span>NOVA
+        </div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to your PARKNOVA account</p>
+      </div>
+
+      <!-- Active Session Notice (If already logged in) -->
+      <div id="active-session-box" class="hidden" style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:0.75rem 1rem; margin-bottom:1.25rem; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <div>
+          <i class="fa-solid fa-circle-check text-primary"></i> Active session: <strong id="active-user-name">User</strong> (<span id="active-user-role">role</span>)
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <a id="btn-go-dashboard" href="#" class="btn btn-primary btn-xs">Dashboard</a>
+          <button type="button" id="btn-logout-here" class="btn btn-outline btn-xs">Sign Out</button>
+        </div>
+      </div>
+
+      <!-- Role Selector Tabs -->
+      <div class="role-selector" id="role-selector">
+        <button type="button" class="role-btn role-driver active" data-role="driver">
+          <i class="fa-solid fa-car"></i> Driver
+        </button>
+        <button type="button" class="role-btn role-owner" data-role="owner">
+          <i class="fa-solid fa-building-user"></i> Owner
+        </button>
+        <button type="button" class="role-btn role-admin" data-role="admin">
+          <i class="fa-solid fa-user-shield"></i> Admin
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address <span class="required">*</span></label>
+          <input type="email" id="login-email" class="form-control" placeholder="name@example.com" autocomplete="email" required>
+          <div class="field-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password <span class="required">*</span></label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
+          <div class="field-error"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-login-btn">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+      </form>
+
+      <!-- Quick Demo Credentials Helpers (For easy presentation) -->
+      <div class="demo-accounts-box">
+        <div class="demo-accounts-box-title">
+          <i class="fa-solid fa-flask"></i> Quick Demo Fill (Single-Click Test)
+        </div>
+        <div class="demo-pills">
+          <button type="button" class="demo-pill" data-email="driver1@parknova.demo" data-pw="Password@123" data-role="driver">
+            <i class="fa-solid fa-car text-primary"></i> Driver (Arjun)
+          </button>
+          <button type="button" class="demo-pill" data-email="owner1@parknova.demo" data-pw="Password@123" data-role="owner">
+            <i class="fa-solid fa-building text-info"></i> Owner (Rajesh)
+          </button>
+          <button type="button" class="demo-pill" data-email="admin@parknova.demo" data-pw="Password@123" data-role="admin">
+            <i class="fa-solid fa-user-shield text-danger"></i> SuperAdmin
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="register.html">Register here</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/navigation.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let selectedRole = 'driver';
+      const roleBtns = document.querySelectorAll('.role-btn');
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      const submitBtn = document.getElementById('submit-login-btn');
+      const params = PN.app.getQueryParams();
+
+      // Check if user already has an active session
+      const activeUser = PN.auth.currentUser();
+      const sessionBox = document.getElementById('active-session-box');
+      if (activeUser && sessionBox) {
+        sessionBox.classList.remove('hidden');
+        document.getElementById('active-user-name').textContent = activeUser.name;
+        document.getElementById('active-user-role').textContent = activeUser.role;
+        document.getElementById('btn-go-dashboard').href = PN.auth.getDashboardUrl(activeUser.role);
+
+        document.getElementById('btn-logout-here').addEventListener('click', () => {
+          PN.auth.logout();
+        });
+      }
+
+      // If user came with role parameter, pre-select it
+      if (params.role && ['driver', 'owner', 'admin'].includes(params.role)) {
+        setRole(params.role);
+      }
+
+      function setRole(role) {
+        selectedRole = role;
+        roleBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.role === role);
+        });
+      }
+
+      roleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          setRole(btn.dataset.role);
+        });
+      });
+
+      // Quick Demo Pills Handler
+      document.querySelectorAll('.demo-pills .demo-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          emailInput.value = pill.dataset.email;
+          passwordInput.value = pill.dataset.pw;
+          setRole(pill.dataset.role);
+          PN.validate.clearErrors(form);
+          PN.toast(`Demo credentials loaded for ${pill.dataset.role.toUpperCase()}`, 'info');
+        });
+      });
+
+      // Form Submission
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        PN.validate.clearErrors(form);
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // Validation
+        const emailErr = PN.validate.email(email);
+        const passErr = PN.validate.required(password, 'Password');
+
+        let isValid = true;
+        if (emailErr) {
+          PN.validate.showFieldError(emailInput, emailErr);
+          isValid = false;
+        }
+        if (passErr) {
+          PN.validate.showFieldError(passwordInput, passErr);
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // Visual loading state
+        const originalBtnHtml = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+        try {
+          const res = await PN.auth.login(email, password, selectedRole);
+          if (!res.success) {
+            PN.toast(res.message, 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+            return;
+          }
+
+          PN.toast(`Welcome back, ${res.user.name}! Redirecting...`, 'success');
+          setTimeout(() => {
+            let targetUrl = res.redirectUrl;
+            if (params.next && !params.next.includes('login.html')) {
+              const rawNext = decodeURIComponent(params.next);
+              // Verify next path matches user role
+              if ((res.user.role === 'owner' && rawNext.includes('owner/')) ||
+                  (res.user.role === 'driver' && rawNext.includes('driver/')) ||
+                  (res.user.role === 'admin' && rawNext.includes('admin/'))) {
+                targetUrl = rawNext;
+              }
+            }
+            window.location.href = targetUrl;
+          }, 400);
+        } catch (err) {
+          PN.toast('Login error: ' + err.message, 'error');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

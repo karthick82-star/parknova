@@ -1,0 +1,577 @@
+/* ==========================================================================
+   PARKNOVA PARKING STYLES (parking.css)
+   Map styling, parking cards, heatmap badges, visual slot grid, QR ticket, fee calculator
+   ========================================================================== */
+
+/* Leaflet Map Layout & Container */
+.map-layout-container {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  height: calc(100vh - var(--nav-height) - 40px);
+  position: relative;
+  overflow: hidden;
+}
+
+.map-sidebar {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.map-search-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.map-search-header .form-group:last-child {
+  margin-bottom: 0;
+}
+
+.map-filter-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.filter-tag {
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.65rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-tag.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.map-results-list {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#map-view {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Parking Facility Card */
+.parking-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.parking-card:hover, .parking-card.selected {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.parking-card-img {
+  height: 150px;
+  background-color: var(--navy);
+  position: relative;
+  overflow: hidden;
+}
+
+.parking-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.parking-card-badges {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parking-card-body {
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.parking-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.parking-address {
+  font-size: var(--fs-xs);
+  color: var(--navy-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.parking-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-light);
+  font-size: var(--fs-xs);
+}
+
+.parking-price-badge {
+  font-size: var(--fs-md);
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.parking-price-badge span {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--navy-muted);
+}
+
+/* Availability Heatmap Indicators */
+.heatmap-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+.heatmap-green {
+  background: #E6F6EF;
+  color: #0F8456;
+}
+
+.heatmap-yellow {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.heatmap-red {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.heatmap-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Map Custom Markers */
+.custom-map-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  border: 2px solid #FFFFFF;
+}
+
+.custom-map-marker i {
+  transform: rotate(45deg);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.custom-map-marker.marker-green { background: #16A36A; }
+.custom-map-marker.marker-yellow { background: #F59E0B; }
+.custom-map-marker.marker-red { background: #EF4444; }
+
+/* Interactive Visual Slot Selector */
+.slot-selection-panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.floor-nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.floor-tab {
+  padding: 0.65rem 1.25rem;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  border: none;
+  background: none;
+  color: var(--navy-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.floor-tab:hover {
+  color: var(--primary);
+}
+
+.floor-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Slot Status Legend */
+.slot-legend {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  background: var(--bg-light);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend-color-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.legend-available { background: var(--slot-available); }
+.legend-occupied { background: var(--slot-occupied); }
+.legend-reserved { background: var(--slot-reserved); }
+.legend-selected { background: var(--slot-selected); }
+.legend-maintenance { background: var(--slot-maintenance); }
+
+/* Slot Layout Grid */
+.slot-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.85rem;
+  padding: 1.5rem;
+  background: #F8FAFC;
+  border: 2px dashed #CBD5E1;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.slot-box {
+  background: var(--white);
+  border: 2px solid var(--slot-available);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  position: relative;
+  user-select: none;
+}
+
+.slot-box .slot-icon {
+  font-size: 1.2rem;
+  color: var(--navy-muted);
+}
+
+.slot-box .slot-label {
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  color: var(--navy);
+}
+
+.slot-box .slot-type-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--navy-muted);
+}
+
+/* Available */
+.slot-box.status-available {
+  border-color: var(--slot-available);
+  background: #F0FDF4;
+}
+
+.slot-box.status-available:hover {
+  border-color: var(--slot-selected);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
+}
+
+/* Occupied */
+.slot-box.status-occupied {
+  border-color: var(--slot-occupied);
+  background: #FEF2F2;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.slot-box.status-occupied .slot-label {
+  color: #DC2626;
+}
+
+/* Reserved */
+.slot-box.status-reserved {
+  border-color: var(--slot-reserved);
+  background: #FFFBEB;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.slot-box.status-reserved .slot-label {
+  color: #B45309;
+}
+
+/* Selected */
+.slot-box.status-selected {
+  border-color: var(--slot-selected);
+  background: #EFF6FF;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  transform: translateY(-2px);
+}
+
+.slot-box.status-selected .slot-label {
+  color: #1D4ED8;
+}
+
+.slot-box.status-selected .slot-icon {
+  color: #2563EB;
+}
+
+/* Maintenance */
+.slot-box.status-maintenance {
+  border-color: var(--slot-maintenance);
+  background: #F1F5F9;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* QR Parking Ticket */
+.ticket-wrapper {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.ticket-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.ticket-header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.ticket-header .brand-logo {
+  color: var(--white);
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.ticket-header h2 {
+  color: var(--white);
+  font-size: var(--fs-lg);
+}
+
+.ticket-body {
+  padding: 1.75rem 1.5rem;
+}
+
+.ticket-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: #F8FAFC;
+  border-radius: var(--radius-md);
+  border: 1px dashed #CBD5E1;
+  margin-bottom: 1.5rem;
+}
+
+.ticket-qr-code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.ticket-id {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--fs-md);
+  color: var(--navy);
+  margin-top: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.ticket-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
+  padding: 1rem 0;
+  margin-bottom: 1.25rem;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-sm);
+}
+
+.ticket-row-label {
+  color: var(--navy-muted);
+  font-weight: 500;
+}
+
+.ticket-row-value {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* Countdown Timer */
+.countdown-box {
+  background: var(--primary-light);
+  border: 1px solid #BBF7D0;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.countdown-title {
+  font-size: var(--fs-xs);
+  color: var(--primary-dark);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.countdown-digits {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* Smart Parking Comparison Matrix */
+.comparison-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+}
+
+.comparison-table th, .comparison-table td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.comparison-table th {
+  background: var(--bg-light);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.comparison-table tr:hover td {
+  background: #F8FAFC;
+}
+
+/* Fee Calculator Breakdown */
+.fee-calculator-box {
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.fee-calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-sm);
+  margin-bottom: 0.65rem;
+}
+
+.fee-calc-total {
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-md);
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.fee-calc-total .amount {
+  color: var(--primary-dark);
+  font-size: var(--fs-xl);
+}
+
